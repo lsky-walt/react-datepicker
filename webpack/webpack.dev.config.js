@@ -33,8 +33,8 @@ module.exports = merge({}, {
     }),
   ],
   devServer: {
-    host: process.env.HOST || '0.0.0.0',
-    port: process.env.PORT || 9090,
+    host: process.env.HOST || 'localhost',
+    port: process.env.PORT || 8810,
     historyApiFallback: true,
     contentBase: [path.join(__dirname, './site')],
   },
