@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import absolute from './absolute-container'
 
-import { pickerClass } from '../tools'
+import { pickerClass, compose } from '../tools'
 import {
   clone,
   getDaysInMonth,
@@ -21,7 +22,18 @@ class Index extends Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      picker: null,
+    }
+
     this.current = clone(new Date())
+
+    // this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick(date) {
+    const { dateClick } = this.props
+    console.log('date: ', date)
   }
 
   getFormat() {
@@ -31,6 +43,8 @@ class Index extends Component {
   }
 
   renderDay() {
+    const { picker } = this.state
+
     const prevMonth = getPrevMonth(this.current)
     const daysInPrevMonth = prevMonth.daysInMonth()
     const startWeek = getStartWeekInMonth(this.current)
@@ -45,11 +59,11 @@ class Index extends Component {
     const prev = Array.from({ length: startWeek }).map((_, index) => {
       const date = daysInPrevMonth - startWeek + 1 + index
       return (
-        <div key={`${prevMonthFormat}-${date}`} className={pickerClass('date')}>{date}</div>
+        <div key={`${prevMonthFormat}-${date}`} className={pickerClass('date')} onMouseDown={this.handleClick.bind(this, `${prevMonthFormat}-${date}`)}>{date}</div>
       )
     })
-    const cur = Array.from({ length: getDaysInMonth(this.current) }).map((_, index) => <div key={`${curMonthFormat}-${index + 1}`} className={pickerClass('date', currentDate === index + 1 && 'current')}>{index + 1}</div>)
-    const next = Array.from({ length: 6 - getEndWeekInMonth(this.current) }).map((_, index) => <div key={`${nextMonthFormat}-${index + 1}`} className={pickerClass('date')}>{index + 1}</div>)
+    const cur = Array.from({ length: getDaysInMonth(this.current) }).map((_, index) => <div key={`${curMonthFormat}-${index + 1}`} onMouseDown={this.handleClick.bind(this, `${curMonthFormat}-${index + 1}`)} className={pickerClass('date', currentDate === index + 1 && 'current')}>{index + 1}</div>)
+    const next = Array.from({ length: 6 - getEndWeekInMonth(this.current) }).map((_, index) => <div key={`${nextMonthFormat}-${index + 1}`} onMouseDown={this.handleClick.bind(this, `${nextMonthFormat}-${index + 1}`)} className={pickerClass('date')}>{index + 1}</div>)
     return (
       <div className={pickerClass('date-container')}>{prev.concat(cur, next)}</div>
     )
@@ -57,7 +71,7 @@ class Index extends Component {
 
   render() {
     return (
-      <div className={clsx(pickerClass('_'), this.props.className)}>
+      <div className={clsx(pickerClass('_', this.props.show && 'show'), this.props.className)}>
         <div className={pickerClass('common')}>
           <div key="prev">&lt;</div>
           <div key="cur">{getMonth(this.current)}</div>
@@ -72,4 +86,9 @@ class Index extends Component {
   }
 }
 
-export default Index
+Index.propTypes = {
+  show: PropTypes.bool,
+  className: PropTypes.string,
+}
+
+export default compose(absolute({ type: 'picker' }))(Index)

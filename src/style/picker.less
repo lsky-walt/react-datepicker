@@ -1,20 +1,21 @@
-@import '../var.less';
+@import './var.less';
 
 @picker-prefix: ~'react-datepicker-picker';
 
 .@{picker-prefix} {
   box-sizing: border-box;
   position: absolute;
-  top: 0;
+  top: 1px;
   left: 0;
   width: 212px;
   height: 212px;
   line-height: @base-line-height;
-  border: @border-width solid @gray;
+  // border: @border-width solid @gray;
   border-radius: @border-radius;
   font-size: 12px;
   background-color: #fff;
   display: none;
+  box-shadow: @box-shadow-color 0px 0px 20px;
 
   &.@{picker-prefix}-show {
     display: block;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { datepickerClass } from '../tools'
+import { inputClass } from '../tools'
 
 class Index extends Component {
   constructor(props) {
@@ -23,7 +23,9 @@ class Index extends Component {
   onBlur(e) {
     const { onBlur } = this.props
     this.setState({ focus: false })
-    onBlur()
+    // if (onBlur(e)) {
+    //   this.setState({ focus: false })
+    // }
   }
 
   onChange(e) {
@@ -35,7 +37,7 @@ class Index extends Component {
     const { value } = this.props
     return (
       // eslint-disable-next-line jsx-a11y/label-has-associated-control
-      <label className={datepickerClass('input', focus && 'input-active')}>
+      <label className={inputClass('_', focus && 'active')}>
         <input key="input" onFocus={this.onFocus} onBlur={this.onBlur} value={value} onChange={this.onChange} />
       </label>
     )

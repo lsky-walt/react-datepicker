@@ -1,0 +1,35 @@
+@import "./var.less";
+
+@input-prefix: ~'react-datepicker-input';
+
+
+.@{input-prefix} {
+  box-sizing: border-box;
+  width: @input-width;
+  border: @border-width solid @input-border-color;
+  display: flex;
+  background-image: none;
+  border-radius: @border-radius;
+  font-size: @font-size;
+  transition: border-color 0.2s ease-in-out;
+
+  &:focus,
+  &:hover,
+  &.@{input-prefix}-active {
+    border-color: #197AFA;
+  }
+
+  & > input {
+    display: block;
+    width: 100%;
+    border: none;
+    outline: none;
+    line-height: @base-line-height;
+    background: transparent;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 8px;
+    padding-left: 8px;
+    overflow: visible;
+  }
+}

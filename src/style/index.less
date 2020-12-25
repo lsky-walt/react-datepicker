@@ -51,7 +51,7 @@
 
         .@{prefix}-picker-input  {
           box-sizing: border-box;
-          padding-top: 16px;
+          margin-top: 16px;
           position: relative;
         }
 
@@ -82,39 +82,6 @@
       .@{prefix}-quick-container  {
         box-sizing: border-box;
         width: 200px;
-      }
-    }
-
-
-    .@{prefix}-input {
-      box-sizing: border-box;
-      width: 100%;
-      border: @border-width solid @input-border-color;
-      display: flex;
-      width: 100%;
-      background-image: none;
-      border-radius: @border-radius;
-      font-size: @font-size;
-      transition: border-color 0.2s ease-in-out;
-
-      &:focus,
-      &:hover,
-      &.@{prefix}-input-active {
-        border-color: #197AFA;
-      }
-
-      & > input {
-        display: block;
-        width: 100%;
-        border: none;
-        outline: none;
-        line-height: @base-line-height;
-        background: transparent;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        padding-right: 8px;
-        padding-left: 8px;
-        overflow: visible;
       }
     }
   }

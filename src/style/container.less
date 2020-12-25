@@ -1,0 +1,62 @@
+@import "./var.less";
+
+@container-prefix: ~'react-datepicker-container';
+
+.@{container-prefix} {
+  box-sizing: border-box;
+  width: 100%;
+  height: @container-height;
+  display: flex;
+  justify-content: flex-start;
+  // border: @border-width solid @gray;
+  border-radius: @border-radius;
+
+  &-main {
+    box-sizing: border-box;
+    border-right: @border-width solid @gray;
+    padding-left: 8px;
+    color: @color;
+    width: 300px;
+
+    .@{container-prefix}-title {
+      box-sizing: border-box;
+      font-size: @font-size;
+      line-height: @base-line-height;
+    }
+
+    .@{container-prefix}-input {
+      box-sizing: border-box;
+      margin-top: 16px;
+      position: relative;
+    }
+
+    .@{container-prefix}-button {
+      margin: 16px 0;
+    }
+
+    .@{container-prefix}-button-confirm {
+      box-sizing: border-box;
+      border: none;
+      margin: 0;
+      padding-top: @button-y;
+      padding-bottom: @button-y;
+      padding-right: @button-x;
+      padding-left: @button-x;
+      outline: none;
+      line-height: @base-line-height;
+      color: #fff;
+      background-color: @primary-color;
+      border-radius: @border-radius;
+      transition: background-color 0.2s ease-in-out;
+
+      &:hover {
+        background-color: Fade(@primary-color, 80%);
+      }
+    }
+  }
+
+  &-quick {
+    box-sizing: border-box;
+    width: @container-quick-width;
+  }
+}

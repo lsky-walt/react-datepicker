@@ -1,8 +1,13 @@
 import React, { Component, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Date from './picker'
+import clsx from 'clsx'
+import Picker from './picker'
+import absolute from './absolute-container'
 
-import { datepickerClass, pickerClass } from '../tools'
+import {
+  datepickerClass, pickerClass, getParent, addEventListener, containerClass,
+  compose,
+} from '../tools'
 
 import Input from './input'
 
@@ -13,8 +18,27 @@ class Index extends Component {
       focus: false,
     }
 
-    this.onFocus = this.changeStatus.bind(this, true)
-    this.onBlur = this.changeStatus.bind(this, false)
+    this.show = this.changeStatus.bind(this, true)
+    this.close = this.changeStatus.bind(this, false)
+    this.onBlur = this.onBlur.bind(this)
+
+    this.doc = null
+  }
+
+  componentDidMount() {
+    this.doc = addEventListener(document, 'mousedown', this.onBlur)
+  }
+
+  componentWillUnmount() {
+    if (this.doc) {
+      this.doc.remove()
+    }
+  }
+
+  onBlur(e) {
+    if (getParent(e.target, '.picker-input')) return false
+    this.close()
+    return true
   }
 
   changeStatus(flag = false) {
@@ -24,28 +48,28 @@ class Index extends Component {
   }
 
   render() {
+    // need absolute component wrap
+    console.log('container render')
+
     return (
-      <div className={datepickerClass('container')}>
-        <div className={datepickerClass('main')}>
-          <div className={datepickerClass('picker-container')}>
-            <div className={datepickerClass('picker')}>
-              <div className={datepickerClass('picker-title')}>Datetime Picker</div>
-              <div className={datepickerClass('picker-input')}>
-              <Input onFocus={this.onFocus} onBlur={this.onBlur} />
-              <Date className={pickerClass(this.state.focus && 'show')} />
+      <div className={containerClass('_')}>
+          <div className={containerClass('main')}>
+            <div className={containerClass('picker')}>
+              <div className={containerClass('title')}>Datetime Picker</div>
+              <div className={clsx(containerClass('input'), 'picker-input')}>
+                <Input onFocus={this.show} />
+                <Picker show={this.state.focus} />
               </div>
-              <div className={datepickerClass('picker-button')}><button type="button" className={datepickerClass('picker-confirm')}>confirm</button></div>
+              <div className={containerClass('button')}><button type="button" className={containerClass('button-confirm')}>confirm</button></div>
             </div>
-            <div className={datepickerClass('picker-recently')}>
-              <div className={datepickerClass('picker-title')}>Recently picker</div>
+            <div className={containerClass('recently')}>
+              <div className={containerClass('title')}>Recently picker</div>
             </div>
           </div>
-          <div className={datepickerClass('quick-container')}>quick container</div>
-        </div>
-        {/* <div className={datepickerClass('main')}></div> */}
+          <div className={containerClass('quick')}>quick container</div>
       </div>
     )
   }
 }
 
-export default Index
+export default compose(absolute({ type: 'container' }))(Index)

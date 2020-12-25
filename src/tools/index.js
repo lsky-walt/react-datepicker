@@ -1,15 +1,129 @@
-import styles from '../style.less'
+import ReactDOM from 'react-dom'
+import styles from '../style/index.less'
 import pickers from '../style/picker.less'
+import absolutes from '../style/absolute.less'
+import inputs from '../style/input.less'
+import results from '../style/result.less'
+import containers from '../style/container.less'
 
-const generateCls = (obj, prefix) => (...args) => args.filter((v) => !!v).map((v) => {
-  if (v === '_') return obj[prefix]
-  return obj[`${prefix}-${v}`]
-}).join(' ')
+const generateCls = (obj, prefix) => (...args) => args.filter((v) => !!v).reduce((prev, cur) => {
+  if (cur === '_') {
+    prev.push(prefix)
+    prev.push(obj[prefix])
+    return prev
+  }
+  prev.push(`${prefix}-${cur}`)
+  prev.push(obj[`${prefix}-${cur}`])
+  return prev
+}, []).join(' ')
 
 const datepickerClass = generateCls(styles, 'react-datepicker')
 const pickerClass = generateCls(pickers, 'react-datepicker-picker')
+const absoluteClass = generateCls(absolutes, 'react-datepicker-absolute')
+const inputClass = generateCls(inputs, 'react-datepicker-input')
+const resultClass = generateCls(results, 'react-datepicker-result')
+const containerClass = generateCls(containers, 'react-datepicker-container')
+
+export function getParent(el, target) {
+  if (!target) {
+    return null
+  }
+
+  let temp = el
+  while (temp) {
+    if (typeof target === 'string') {
+      if (temp.matches && temp.matches(target)) {
+        return temp
+      }
+    } else if (temp === target) {
+      return temp
+    }
+
+    temp = temp.parentElement
+  }
+
+  return null
+}
+
+export function addEventListener(target, eventType, cb, option) {
+  /* eslint camelcase: 2 */
+  const callback = ReactDOM.unstable_batchedUpdates ? function run(e) {
+    ReactDOM.unstable_batchedUpdates(cb, e)
+  } : cb
+
+  if (target.addEventListener) {
+    target.addEventListener(eventType, callback, option)
+  }
+
+  return {
+    remove: function remove() {
+      if (target.removeEventListener) {
+        target.removeEventListener(eventType, callback)
+      }
+    },
+  }
+}
+
+export const docScroll = {
+  get top() {
+    return document.documentElement.scrollTop || document.body.scrollTop
+  },
+  get left() {
+    return document.documentElement.scrollLeft || document.body.scrollLeft
+  },
+  set top(value) {
+    document.documentElement.scrollTop = value
+    document.body.scrollTop = value
+  },
+  set left(value) {
+    document.documentElement.scrollLeft = value
+    document.body.scrollLeft = value
+  },
+}
+
+export const docSize = {
+  get width() {
+    return window.innerWidth || document.documentElement.clientWidth
+  },
+  get height() {
+    return window.innerHeight || document.documentElement.clientHeight
+  },
+}
+
+/**
+ * from redux.compose https://github.com/reactjs/redux/blob/master/src/compose.js
+ * Composes single-argument functions from right to left. The rightmost
+ * function can take multiple arguments as it provides the signature for
+ * the resulting composite function.
+ *
+ * @param {...Function} funcs The functions to compose.
+ * @returns {Function} A function obtained by composing the argument functions
+ * from right to left. For example, compose(f, g, h) is identical to doing
+ * (...args) => f(g(h(...args))).
+ */
+export function compose(...funcs) {
+  if (funcs.length === 0) {
+    return (arg) => arg
+  }
+  const last = funcs[funcs.length - 1]
+  const rest = funcs.slice(0, -1)
+  return (...args) => rest.reduceRight((composed, f) => f(composed), last(...args))
+}
+
+export function curry(f, ...args) {
+  if (args.length >= f.length) {
+    return f(...args)
+  }
+
+  return (...next) => curry(f.bind(f, ...args), ...next)
+}
+
 export {
   generateCls,
   datepickerClass,
   pickerClass,
+  absoluteClass,
+  inputClass,
+  resultClass,
+  containerClass,
 }
