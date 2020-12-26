@@ -1,4 +1,11 @@
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+const formats = {
+  date: 'YYYY-MM-DD',
+  time: 'hh:mm:ss',
+  datetime: 'YYYY-MM-DD hh:mm:ss',
+}
 
 // input element width
 const inputWidth = 285
@@ -12,6 +19,8 @@ const containerMainWidth = 300
 
 export {
   months,
+  weeks,
+  formats,
   inputWidth,
   pickerWidth,
   containerWidth,

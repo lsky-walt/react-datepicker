@@ -31,7 +31,8 @@
     }
 
     .@{container-prefix}-button {
-      margin: 16px 0;
+      margin-top: 16px;
+      padding-bottom: 16px;;
     }
 
     .@{container-prefix}-button-confirm {
@@ -43,7 +44,7 @@
       padding-right: @button-x;
       padding-left: @button-x;
       outline: none;
-      line-height: @base-line-height;
+      line-height: @base-line-height - 8;
       color: #fff;
       background-color: @primary-color;
       border-radius: @border-radius;
@@ -51,6 +52,18 @@
 
       &:hover {
         background-color: Fade(@primary-color, 80%);
+      }
+    }
+
+    .@{container-prefix}-recently {
+      &-container {
+        box-sizing: border-box;
+        padding-top: 16px;
+  
+        .@{container-prefix}-quick-item {
+          font-size: @font-size;
+          line-height: @base-line-height;
+        }
       }
     }
   }

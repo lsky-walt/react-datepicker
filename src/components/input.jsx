@@ -5,27 +5,13 @@ import { inputClass } from '../tools'
 class Index extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      focus: false,
-    }
-
     this.onFocus = this.onFocus.bind(this)
-    this.onBlur = this.onBlur.bind(this)
     this.onChange = this.onChange.bind(this)
   }
 
   onFocus(e) {
     const { onFocus } = this.props
-    this.setState({ focus: true })
     onFocus()
-  }
-
-  onBlur(e) {
-    const { onBlur } = this.props
-    this.setState({ focus: false })
-    // if (onBlur(e)) {
-    //   this.setState({ focus: false })
-    // }
   }
 
   onChange(e) {
@@ -33,12 +19,11 @@ class Index extends Component {
   }
 
   render() {
-    const { focus } = this.state
-    const { value } = this.props
+    const { value, focus, readOnly } = this.props
     return (
       // eslint-disable-next-line jsx-a11y/label-has-associated-control
       <label className={inputClass('_', focus && 'active')}>
-        <input key="input" onFocus={this.onFocus} onBlur={this.onBlur} value={value} onChange={this.onChange} />
+        <input key="input" readOnly={readOnly} onFocus={this.onFocus} value={value} onChange={this.onChange} />
       </label>
     )
   }
@@ -46,6 +31,11 @@ class Index extends Component {
 
 Index.propTypes = {
   value: PropTypes.string,
+  focus: PropTypes.bool,
+  onFocus: PropTypes.func,
+  readOnly: PropTypes.bool,
 }
+
+Index.displayName = 'Input'
 
 export default Index

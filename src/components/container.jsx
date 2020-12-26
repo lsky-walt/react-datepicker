@@ -5,7 +5,12 @@ import Picker from './picker'
 import absolute from './absolute-container'
 
 import {
-  datepickerClass, pickerClass, getParent, addEventListener, containerClass,
+  datepickerClass,
+  pickerClass,
+  getParent,
+  addEventListener,
+  containerClass,
+  pushToRecently,
   compose,
 } from '../tools'
 
@@ -16,17 +21,30 @@ class Index extends Component {
     super(props)
     this.state = {
       focus: false,
+      date: '',
     }
 
-    this.show = this.changeStatus.bind(this, true)
-    this.close = this.changeStatus.bind(this, false)
+    this.show = this.isFocus.bind(this, true)
+    this.close = this.isFocus.bind(this, false)
     this.onBlur = this.onBlur.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.apply = this.apply.bind(this)
 
     this.doc = null
+
+    // recently picker
+    this.recently = []
   }
 
   componentDidMount() {
     this.doc = addEventListener(document, 'mousedown', this.onBlur)
+  }
+
+  componentDidUpdate(prevProps) {
+    // const { date } = this.state
+    // if (prevProps.value !== date) {
+    //   this.onChange(prevProps.value)
+    // }
   }
 
   componentWillUnmount() {
@@ -35,21 +53,35 @@ class Index extends Component {
     }
   }
 
-  onBlur(e) {
-    if (getParent(e.target, '.picker-input')) return false
-    this.close()
-    return true
+  onChange(date) {
+    this.setState({ date })
   }
 
-  changeStatus(flag = false) {
+  onBlur(e) {
+    const { focus } = this.state
+    if (getParent(e.target, '.react-datepicker-container-input') || focus === false) return
+    this.close()
+  }
+
+  apply() {
+    const { date } = this.state
+    const { onChange, close } = this.props
+    onChange(date)
+    this.recently = pushToRecently(this.recently, date)
+    close()
+  }
+
+  isFocus(focus = false) {
     this.setState({
-      focus: flag,
+      focus,
     })
   }
 
   render() {
-    // need absolute component wrap
-    console.log('container render')
+    const { editable } = this.props
+    const { focus, date } = this.state
+
+    console.log(this.recently)
 
     return (
       <div className={containerClass('_')}>
@@ -57,13 +89,34 @@ class Index extends Component {
             <div className={containerClass('picker')}>
               <div className={containerClass('title')}>Datetime Picker</div>
               <div className={clsx(containerClass('input'), 'picker-input')}>
-                <Input onFocus={this.show} />
-                <Picker show={this.state.focus} />
+                <Input readOnly={!editable} onFocus={this.show} focus={focus} value={date} />
+                <Picker value={date} onChange={this.onChange} show={focus} />
               </div>
-              <div className={containerClass('button')}><button type="button" className={containerClass('button-confirm')}>confirm</button></div>
+              <div
+                className={containerClass('button')}
+              >
+                <button
+                  type="button"
+                  className={containerClass('button-confirm')}
+                  onClick={this.apply}
+                >
+                  Confirm
+                </button>
+              </div>
             </div>
             <div className={containerClass('recently')}>
               <div className={containerClass('title')}>Recently picker</div>
+              <div className={containerClass('recently-container')}>
+                {this.recently.map((value) => {
+                  if (typeof value === 'string') {
+                    return (
+                      <div className={containerClass('quick-item')}>{value}</div>
+                    )
+                  }
+                  // will support range
+                  return null
+                })}
+              </div>
             </div>
           </div>
           <div className={containerClass('quick')}>quick container</div>
@@ -72,4 +125,15 @@ class Index extends Component {
   }
 }
 
+Index.propTypes = {
+  editable: PropTypes.bool,
+  onChange: PropTypes.func,
+  format: PropTypes.string,
+  close: PropTypes.func,
+  value: PropTypes.string,
+}
+
+Index.displayName = 'Container'
+
+// need absolute component wrap
 export default compose(absolute({ type: 'container' }))(Index)

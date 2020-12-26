@@ -7,8 +7,8 @@
   position: absolute;
   top: 1px;
   left: 0;
-  width: 212px;
-  height: 212px;
+  width: @picker-size-width;
+  height: @picker-size-height;
   line-height: @base-line-height;
   // border: @border-width solid @gray;
   border-radius: @border-radius;
@@ -24,19 +24,21 @@
   &-common {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    height: 30px;
+    height: @picker-per-size-height;
 
     &  >  div {
       box-sizing: border-box;
-      height: 30px;
-      line-height: 30px;
+      min-width: 40px;
+      height: @picker-per-size-height;
+      line-height: @picker-per-size-height;
       text-align: center;
+      cursor: pointer;
     }
 
     .@{picker-prefix}-week {
-      width: 30px;
+      width: @picker-per-size-width;
     }
   }
 
@@ -47,15 +49,21 @@
     flex-wrap: wrap;
 
     .@{picker-prefix}-date {
-      width: 30px;
-      height: 30px;
+      width: @picker-per-size-width;
+      height: @picker-per-size-height;
       text-align: center;
-      line-height: 30px;
+      line-height: @picker-per-size-height;
       cursor: pointer;
     }
 
     .@{picker-prefix}-current {
       color: @primary-color;
+    }
+
+    .@{picker-prefix}-date.@{picker-prefix}-active {
+      border-radius: @picker-per-size-height / 2;
+      background-color: @primary-color;
+      color: #fff;
     }
   }
 }

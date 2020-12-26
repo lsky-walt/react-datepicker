@@ -16,6 +16,7 @@ import {
   weeks,
   formats,
   resetDate,
+  supplementZero,
 } from '../tools/date'
 
 class Index extends Component {
@@ -32,8 +33,8 @@ class Index extends Component {
   }
 
   handleClick(date) {
-    const { dateClick } = this.props
-    console.log('date: ', date)
+    const { onChange } = this.props
+    onChange(date)
   }
 
   getFormat() {
@@ -44,12 +45,13 @@ class Index extends Component {
 
   renderDay() {
     const { picker } = this.state
+    const { value } = this.props
 
     const prevMonth = getPrevMonth(this.current)
     const daysInPrevMonth = prevMonth.daysInMonth()
     const startWeek = getStartWeekInMonth(this.current)
 
-    const currentDate = this.current.date()
+    const currentDate = this.current.date().toString()
 
     // prev month format
     const prevMonthFormat = prevMonth.format('YYYY-MM')
@@ -57,13 +59,46 @@ class Index extends Component {
     const nextMonthFormat = getNextMonth(this.current).format('YYYY-MM')
 
     const prev = Array.from({ length: startWeek }).map((_, index) => {
-      const date = daysInPrevMonth - startWeek + 1 + index
+      const day = daysInPrevMonth - startWeek + 1 + index
+      const date = `${prevMonthFormat}-${day}`
       return (
-        <div key={`${prevMonthFormat}-${date}`} className={pickerClass('date')} onMouseDown={this.handleClick.bind(this, `${prevMonthFormat}-${date}`)}>{date}</div>
+        <div
+          key={date}
+          className={pickerClass('date', date === value && 'active')}
+          onMouseDown={this.handleClick.bind(this, date)}
+        >
+          {day}
+        </div>
       )
     })
-    const cur = Array.from({ length: getDaysInMonth(this.current) }).map((_, index) => <div key={`${curMonthFormat}-${index + 1}`} onMouseDown={this.handleClick.bind(this, `${curMonthFormat}-${index + 1}`)} className={pickerClass('date', currentDate === index + 1 && 'current')}>{index + 1}</div>)
-    const next = Array.from({ length: 6 - getEndWeekInMonth(this.current) }).map((_, index) => <div key={`${nextMonthFormat}-${index + 1}`} onMouseDown={this.handleClick.bind(this, `${nextMonthFormat}-${index + 1}`)} className={pickerClass('date')}>{index + 1}</div>)
+    const cur = Array.from({ length: getDaysInMonth(this.current) })
+      .map((_, index) => {
+        const day = supplementZero(index + 1)
+        const date = `${curMonthFormat}-${day}`
+        return (
+          <div
+            key={date}
+            onMouseDown={this.handleClick.bind(this, date)}
+            className={pickerClass('date', currentDate === day && 'current', date === value && 'active')}
+          >
+          {day}
+          </div>
+        )
+      })
+    const next = Array.from({ length: 6 - getEndWeekInMonth(this.current) })
+      .map((_, index) => {
+        const day = supplementZero(index + 1)
+        const date = `${nextMonthFormat}-${day}`
+        return (
+          <div
+            key={date}
+            onMouseDown={this.handleClick.bind(this, date)}
+            className={pickerClass('date', date === value && 'active')}
+          >
+          {day}
+          </div>
+        )
+      })
     return (
       <div className={pickerClass('date-container')}>{prev.concat(cur, next)}</div>
     )
@@ -89,6 +124,10 @@ class Index extends Component {
 Index.propTypes = {
   show: PropTypes.bool,
   className: PropTypes.string,
+  format: PropTypes.string,
+  onChange: PropTypes.func,
 }
+
+Index.displayName = 'Picker'
 
 export default compose(absolute({ type: 'picker' }))(Index)

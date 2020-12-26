@@ -7,6 +7,11 @@
   position: absolute;
   top: 100%;
   left: 0;
+  display: none;
   box-shadow: @box-shadow-color 0px 0px 20px;
   border-radius: @border-radius;
+
+  &.@{absolute-prefix}-show {
+    display: block;
+  }
 }

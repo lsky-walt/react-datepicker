@@ -9,6 +9,8 @@ const absoluteWrap = (options, Component) => {
       super(props)
 
       this.ref = this.ref.bind(this)
+
+      this.didmount = false
     }
 
     getParents() {
@@ -47,8 +49,11 @@ const absoluteWrap = (options, Component) => {
 
     render() {
       console.log('hoc: absolute render')
+      const { show } = this.props
+      if (!show && !this.didmount) return null
+      this.didmount = true
       return (
-        <div className={absoluteClass('_')} style={this.getStyles()} ref={this.ref}>
+        <div className={absoluteClass('_', show && 'show')} style={this.getStyles()} ref={this.ref}>
           <Component {...this.props} />
         </div>
       )
@@ -59,7 +64,10 @@ const absoluteWrap = (options, Component) => {
     parent: PropTypes.element,
     children: PropTypes.node,
     absolute: PropTypes.bool,
+    show: PropTypes.bool,
   }
+
+  Index.displayName = 'Absolute'
 
   return Index
 }

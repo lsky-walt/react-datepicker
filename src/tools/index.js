@@ -1,4 +1,7 @@
 import ReactDOM from 'react-dom'
+
+import { formats } from './config'
+
 import styles from '../style/index.less'
 import pickers from '../style/picker.less'
 import absolutes from '../style/absolute.less'
@@ -116,6 +119,32 @@ export function curry(f, ...args) {
   }
 
   return (...next) => curry(f.bind(f, ...args), ...next)
+}
+
+/**
+ * get date format
+ * @param {string} type date | time | datetime | month | year
+ * @param {string} format date format  ==>  dayjs
+ */
+export function getFormat(type, format) {
+  if (!type) return formats.datetime
+  if (!format) return type
+  return format
+}
+
+const RECENTLY_LENGTH = 4
+/**
+ * push date to recently stack
+ * @param {array} recently recently picker
+ * @param {string} date date
+ */
+export function pushToRecently(recently, date) {
+  if (recently.length > RECENTLY_LENGTH) {
+    recently.splice(0, 1, date)
+    return recently
+  }
+  recently.unshift(date)
+  return recently
 }
 
 export {
