@@ -77,6 +77,14 @@ class Index extends Component {
     })
   }
 
+  renderQuick() {
+    const { quickSelect } = this.props
+    if (!quickSelect) return null
+    return (
+      <div className={containerClass('quick')}>quick container</div>
+    )
+  }
+
   render() {
     const { editable } = this.props
     const { focus, date } = this.state
@@ -119,7 +127,7 @@ class Index extends Component {
               </div>
             </div>
           </div>
-          <div className={containerClass('quick')}>quick container</div>
+          {this.renderQuick()}
       </div>
     )
   }
@@ -131,6 +139,7 @@ Index.propTypes = {
   format: PropTypes.string,
   close: PropTypes.func,
   value: PropTypes.string,
+  quickSelect: PropTypes.bool,
 }
 
 Index.displayName = 'Container'
