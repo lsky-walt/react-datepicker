@@ -93,41 +93,41 @@ class Index extends Component {
 
     return (
       <div className={containerClass('_')}>
-          <div className={containerClass('main')}>
-            <div className={containerClass('picker')}>
-              <div className={containerClass('title')}>Datetime Picker</div>
-              <div className={clsx(containerClass('input'), 'picker-input')}>
-                <Input readOnly={!editable} onFocus={this.show} focus={focus} value={date} />
-                <Picker value={date} onChange={this.onChange} show={focus} />
-              </div>
-              <div
-                className={containerClass('button')}
-              >
-                <button
-                  type="button"
-                  className={containerClass('button-confirm')}
-                  onClick={this.apply}
-                >
-                  Confirm
-                </button>
-              </div>
+        <div className={containerClass('main')}>
+          <div className={containerClass('picker')}>
+            <div className={containerClass('title')}>Datetime Picker</div>
+            <div className={clsx(containerClass('input'), 'picker-input')}>
+              <Input readOnly={!editable} onFocus={this.show} focus={focus} value={date} />
+              <Picker value={date} onChange={this.onChange} show={focus} />
             </div>
-            <div className={containerClass('recently')}>
-              <div className={containerClass('title')}>Recently picker</div>
-              <div className={containerClass('recently-container')}>
-                {this.recently.map((value) => {
-                  if (typeof value === 'string') {
-                    return (
-                      <div className={containerClass('quick-item')}>{value}</div>
-                    )
-                  }
-                  // will support range
-                  return null
-                })}
-              </div>
+            <div
+              className={containerClass('button')}
+            >
+              <button
+                type="button"
+                className={containerClass('button-confirm')}
+                onClick={this.apply}
+              >
+                Confirm
+              </button>
             </div>
           </div>
-          {this.renderQuick()}
+          <div className={containerClass('recently')}>
+            <div className={containerClass('title')}>Recently picker</div>
+            <div className={containerClass('recently-container')}>
+              {this.recently.map((value) => {
+                if (value && typeof value === 'string') {
+                  return (
+                    <div className={containerClass('quick-item')}>{value}</div>
+                  )
+                }
+                // will support range
+                return null
+              })}
+            </div>
+          </div>
+        </div>
+        {this.renderQuick()}
       </div>
     )
   }

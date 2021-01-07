@@ -139,6 +139,7 @@ const RECENTLY_LENGTH = 4
  * @param {string} date date
  */
 export function pushToRecently(recently, date) {
+  if (!date) return recently
   if (recently.length > RECENTLY_LENGTH) {
     recently.splice(0, 1, date)
     return recently

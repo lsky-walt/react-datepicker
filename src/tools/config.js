@@ -5,6 +5,8 @@ const formats = {
   date: 'YYYY-MM-DD',
   time: 'hh:mm:ss',
   datetime: 'YYYY-MM-DD hh:mm:ss',
+  month: 'YYYY-MM',
+  year: 'YYYY',
 }
 
 // input element width
