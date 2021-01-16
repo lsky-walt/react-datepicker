@@ -34,7 +34,7 @@ class Index extends React.Component {
   onBlur(e) {
     const { show } = this.state
     if (getParent(e.target, '.react-datepicker-absolute') || show === false) return
-    this.changeShow(false)
+    this.onClose()
   }
 
   onChange(date) {
@@ -54,7 +54,12 @@ class Index extends React.Component {
     return (
       <div className={datepickerClass('_')} style={{ width: 300 }}>
         <Input readOnly onFocus={this.onFocus} value={date} />
-        <Container value={date} show={show} onChange={this.onChange} close={this.onClose} />
+        <Container
+          value={date}
+          show={show}
+          onChange={this.onChange}
+          close={this.onClose}
+        />
       </div>
     )
   }

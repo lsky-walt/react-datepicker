@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { absoluteClass, curry } from '../tools'
+import { absoluteClass, curry, shortID } from '../tools'
 import { inputWidth, pickerWidth, containerWidth } from '../tools/config'
 
 const absoluteWrap = (options, Component) => {
@@ -11,6 +11,23 @@ const absoluteWrap = (options, Component) => {
       this.ref = this.ref.bind(this)
 
       this.didmount = false
+
+      this.state = {
+        key: null,
+      }
+    }
+
+    componentDidUpdate(prevProps) {
+      if (prevProps.show !== this.props.show) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({
+          key: shortID(),
+        })
+      }
+    }
+
+    componentWillUnmount() {
+      console.log('will unmount')
     }
 
     getParents() {
@@ -48,13 +65,12 @@ const absoluteWrap = (options, Component) => {
     }
 
     render() {
-      console.log('hoc: absolute render')
       const { show } = this.props
       if (!show && !this.didmount) return null
       this.didmount = true
       return (
         <div className={absoluteClass('_', show && 'show')} style={this.getStyles()} ref={this.ref}>
-          <Component {...this.props} />
+          <Component key={this.state.key} {...this.props} />
         </div>
       )
     }

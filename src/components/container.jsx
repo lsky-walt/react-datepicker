@@ -89,17 +89,15 @@ class Index extends Component {
     const { editable } = this.props
     const { focus, date } = this.state
 
-    console.log(this.recently)
-
     return (
       <div className={containerClass('_')}>
         <div className={containerClass('main')}>
           <div className={containerClass('picker')}>
             <div className={containerClass('title')}>Datetime Picker</div>
-            <div className={clsx(containerClass('input'), 'picker-input')}>
+            <span className={clsx(containerClass('input'), 'picker-input')}>
               <Input readOnly={!editable} onFocus={this.show} focus={focus} value={date} />
               <Picker value={date} onChange={this.onChange} show={focus} />
-            </div>
+            </span>
             <div
               className={containerClass('button')}
             >
@@ -118,7 +116,7 @@ class Index extends Component {
               {this.recently.map((value) => {
                 if (value && typeof value === 'string') {
                   return (
-                    <div className={containerClass('quick-item')}>{value}</div>
+                    <div className={containerClass('quick-item')} key={value}>{value}</div>
                   )
                 }
                 // will support range
@@ -140,6 +138,7 @@ Index.propTypes = {
   close: PropTypes.func,
   value: PropTypes.string,
   quickSelect: PropTypes.bool,
+  bindResetContainerDateFunc: PropTypes.func,
 }
 
 Index.displayName = 'Container'
