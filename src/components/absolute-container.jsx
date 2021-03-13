@@ -11,19 +11,6 @@ const absoluteWrap = (options, Component) => {
       this.ref = this.ref.bind(this)
 
       this.didmount = false
-
-      this.state = {
-        key: null,
-      }
-    }
-
-    componentDidUpdate(prevProps) {
-      if (prevProps.show !== this.props.show) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({
-          key: shortID(),
-        })
-      }
     }
 
     componentWillUnmount() {
@@ -70,7 +57,7 @@ const absoluteWrap = (options, Component) => {
       this.didmount = true
       return (
         <div className={absoluteClass('_', show && 'show')} style={this.getStyles()} ref={this.ref}>
-          <Component key={this.state.key} {...this.props} />
+          <Component {...this.props} />
         </div>
       )
     }

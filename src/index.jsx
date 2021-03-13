@@ -4,7 +4,9 @@ import Result from './components/result'
 import Input from './components/input'
 import Container from './components/container'
 
-import { datepickerClass, addEventListener, getParent } from './tools'
+import {
+  datepickerClass, addEventListener, getParent, shortID,
+} from './tools'
 
 class Index extends React.Component {
   constructor(props) {

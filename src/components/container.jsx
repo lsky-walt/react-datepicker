@@ -21,7 +21,7 @@ class Index extends Component {
     super(props)
     this.state = {
       focus: false,
-      date: '',
+      date: props.value,
     }
 
     this.show = this.isFocus.bind(this, true)
