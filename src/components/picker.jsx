@@ -35,9 +35,17 @@ class Index extends Component {
     this.nextMonthClick = this.nextMonthClick.bind(this)
   }
 
+  componentDidUpdate(prevProps) {
+    const { show, isRange } = this.props
+    if (isRange && prevProps.show !== show && !show) {
+      this.updatePicker(null)
+    }
+  }
+
   handleClick(date) {
     const { onChange } = this.props
-    onChange(date)
+    if (typeof onChange === 'function') onChange(date)
+    this.setState({ picker: date })
   }
 
   getFormat() {
@@ -49,6 +57,10 @@ class Index extends Component {
   // wrap date with dayjs
   getWrapDays() {
     return clone(this.state.current)
+  }
+
+  updatePicker(picker) {
+    this.setState({ picker })
   }
 
   prevMonthClick() {
@@ -65,7 +77,6 @@ class Index extends Component {
 
   renderDay() {
     const { picker } = this.state
-    const { value } = this.props
 
     const current = this.getWrapDays()
 
@@ -86,7 +97,7 @@ class Index extends Component {
       return (
         <div
           key={date}
-          className={pickerClass('date', date === value && 'active')}
+          className={pickerClass('date', date === picker && 'active')}
           onMouseDown={this.handleClick.bind(this, date)}
         >
           {day}
@@ -101,7 +112,7 @@ class Index extends Component {
           <div
             key={date}
             onMouseDown={this.handleClick.bind(this, date)}
-            className={pickerClass('date', today === date && 'current', date === value && 'active')}
+            className={pickerClass('date', today === date && 'current', date === picker && 'active')}
           >
           {day}
           </div>
@@ -115,7 +126,7 @@ class Index extends Component {
           <div
             key={date}
             onMouseDown={this.handleClick.bind(this, date)}
-            className={pickerClass('date', date === value && 'active')}
+            className={pickerClass('date', date === picker && 'active')}
           >
           {day}
           </div>
@@ -149,6 +160,7 @@ Index.propTypes = {
   format: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.string,
+  isRange: PropTypes.bool,
 }
 
 Index.displayName = 'Picker'
