@@ -77,7 +77,7 @@ class Index extends React.Component {
       )
     }
     return (
-      <Picker isRange show={show} value={date} />
+      <Picker isRange show={show} value={date} onChange={this.onChange} />
     )
   }
 
