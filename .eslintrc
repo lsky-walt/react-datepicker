@@ -1,6 +1,7 @@
 {
   "extends": [
-    "airbnb"
+    "airbnb",
+    "prettier"
   ],
   "parser": "babel-eslint",
   "env": {
@@ -10,7 +11,8 @@
     "jest": true
   },
   "plugins": [
-    "react"
+    "react",
+    "prettier"
   ],
   "parserOptions": {
     "ecmaVersion": 2019,
@@ -55,7 +57,7 @@
     "import/prefer-default-export": 0,
     "import/extensions": 0,
     "max-len": 0,
-    "no-console": 0,
+    "no-console": 1,
     "no-continue": 0,
     "no-labels": 0,
     "no-restricted-syntax": 0,

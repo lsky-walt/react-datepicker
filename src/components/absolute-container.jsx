@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { absoluteClass, curry, shortID } from '../tools'
-import { inputWidth, pickerWidth, containerWidth } from '../tools/config'
+import React from "react"
+import PropTypes from "prop-types"
+import { absoluteClass, curry } from "../tools"
+import { inputWidth, pickerWidth, containerWidth } from "../tools/config"
 
 const absoluteWrap = (options, Component) => {
   class Index extends React.Component {
@@ -14,7 +14,7 @@ const absoluteWrap = (options, Component) => {
     }
 
     componentWillUnmount() {
-      console.log('will unmount')
+      console.log("will unmount")
     }
 
     getParents() {
@@ -56,7 +56,11 @@ const absoluteWrap = (options, Component) => {
       if (!show && !this.didmount) return null
       this.didmount = true
       return (
-        <div className={absoluteClass('_', show && 'show')} style={this.getStyles()} ref={this.ref}>
+        <div
+          className={absoluteClass("_", show && "show")}
+          style={this.getStyles()}
+          ref={this.ref}
+        >
           <Component {...this.props} />
         </div>
       )
@@ -70,7 +74,7 @@ const absoluteWrap = (options, Component) => {
     show: PropTypes.bool,
   }
 
-  Index.displayName = 'Absolute'
+  Index.displayName = "Absolute"
 
   return Index
 }

@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { inputClass } from '../tools'
+import React, { Component } from "react"
+import PropTypes from "prop-types"
+import { inputClass } from "../tools"
 
 class Index extends Component {
   constructor(props) {
@@ -15,15 +15,22 @@ class Index extends Component {
   }
 
   onChange(e) {
-    console.log('onChange: ', e.target.value)
+    console.log("onChange: ", e.target.value)
   }
 
   render() {
     const { value, focus, readOnly } = this.props
     return (
       // eslint-disable-next-line jsx-a11y/label-has-associated-control
-      <label className={inputClass('_', focus && 'active')}>
-        <input key="input" readOnly={readOnly} onFocus={this.onFocus} value={value} onChange={this.onChange} />
+      <label className={inputClass("_", focus && "active")}>
+        <input
+          key="input"
+          type="text"
+          readOnly={readOnly}
+          onFocus={this.onFocus}
+          value={value || ""}
+          onChange={this.onChange}
+        />
       </label>
     )
   }
@@ -36,6 +43,6 @@ Index.propTypes = {
   readOnly: PropTypes.bool,
 }
 
-Index.displayName = 'Input'
+Index.displayName = "Input"
 
 export default Index

@@ -1,13 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Result from './components/result'
-import Input from './components/input'
-import Container from './components/container'
-import Picker from './components/picker'
+import React from "react"
+import PropTypes from "prop-types"
+import { addEventListener } from "@lsky/tools/lib/dom"
+import Result from "./components/result"
+import Input from "./components/input"
+import Container from "./components/container"
+import Picker from "./components/picker"
 
-import {
-  datepickerClass, addEventListener, getParent, shortID,
-} from './tools'
+import { datepickerClass, isInReactDatepickerComponent } from "./tools"
 
 class Index extends React.Component {
   constructor(props) {
@@ -15,7 +14,7 @@ class Index extends React.Component {
     this.onChange = this.onChange.bind(this)
 
     this.state = {
-      date: '',
+      date: props.value,
       show: false,
     }
 
@@ -27,7 +26,15 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    this.event = addEventListener(document, 'mousedown', this.onBlur)
+    this.event = addEventListener(document, "mousedown", this.onBlur)
+  }
+
+  componentDidUpdate(prevProps) {
+    const { value } = this.props
+    if (value !== prevProps.value) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ data: value })
+    }
   }
 
   componentWillUnmount() {
@@ -36,13 +43,13 @@ class Index extends React.Component {
 
   onBlur(e) {
     const { show } = this.state
-    if (getParent(e.target, '.react-datepicker-absolute') || show === false) return
+    if (isInReactDatepickerComponent(e.target) || show === false) return
     this.onClose()
   }
 
   onChange(date) {
     const { onChange } = this.props
-    if (typeof onChange === 'function') onChange(date)
+    if (typeof onChange === "function") onChange(date)
     this.setState({ date })
   }
 
@@ -52,8 +59,8 @@ class Index extends React.Component {
    */
   isRange() {
     const { range } = this.props
-    if (typeof range === 'boolean' && range) return true
-    if (typeof range === 'number' && range > 0) return true
+    if (typeof range === "boolean" && range) return true
+    if (typeof range === "number" && range > 0) return true
     return false
   }
 
@@ -76,15 +83,13 @@ class Index extends React.Component {
         />
       )
     }
-    return (
-      <Picker isRange show={show} value={date} onChange={this.onChange} />
-    )
+    return <Picker isRange show={show} value={date} onChange={this.onChange} />
   }
 
   render() {
     const { date } = this.state
     return (
-      <div className={datepickerClass('_')} style={{ width: 300 }}>
+      <div className={datepickerClass("_")} style={{ width: 300 }}>
         <Input readOnly onFocus={this.onFocus} value={date} />
         {this.renderContent()}
       </div>
@@ -93,15 +98,13 @@ class Index extends React.Component {
 }
 
 Index.propTypes = {
+  value: PropTypes.string,
   onChange: PropTypes.func,
   type: PropTypes.string,
   format: PropTypes.string,
-  range: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.bool,
-  ]),
+  range: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
 }
 
-Index.displayName = 'ReactPicker'
+Index.displayName = "ReactPicker"
 
 export default Index

@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import clsx from 'clsx'
-import absolute from './absolute-container'
+import React, { Component } from "react"
+import PropTypes from "prop-types"
+import clsx from "clsx"
+import absolute from "./absolute-container"
 
-import { pickerClass, compose } from '../tools'
+import { pickerClass, compose } from "../tools"
 import {
   clone,
   getDaysInMonth,
@@ -17,7 +17,7 @@ import {
   formats,
   resetDate,
   supplementZero,
-} from '../tools/date'
+} from "../tools/date"
 
 class Index extends Component {
   constructor(props) {
@@ -26,8 +26,7 @@ class Index extends Component {
     this.today = clone(new Date())
 
     this.state = {
-      picker: null,
-      current: this.today.format(formats.month),
+      current: this.today.format(formats.month), // current: month format with dayjs
     }
 
     // this.handleClick = this.handleClick.bind(this)
@@ -35,17 +34,9 @@ class Index extends Component {
     this.nextMonthClick = this.nextMonthClick.bind(this)
   }
 
-  componentDidUpdate(prevProps) {
-    const { show, isRange } = this.props
-    if (isRange && prevProps.show !== show && !show) {
-      this.updatePicker(null)
-    }
-  }
-
   handleClick(date) {
     const { onChange } = this.props
-    if (typeof onChange === 'function') onChange(date)
-    this.setState({ picker: date })
+    if (typeof onChange === "function") onChange(date)
   }
 
   getFormat() {
@@ -57,10 +48,6 @@ class Index extends Component {
   // wrap date with dayjs
   getWrapDays() {
     return clone(this.state.current)
-  }
-
-  updatePicker(picker) {
-    this.setState({ picker })
   }
 
   prevMonthClick() {
@@ -76,7 +63,7 @@ class Index extends Component {
   }
 
   renderDay() {
-    const { picker } = this.state
+    const { value } = this.props
 
     const current = this.getWrapDays()
 
@@ -97,56 +84,95 @@ class Index extends Component {
       return (
         <div
           key={date}
-          className={pickerClass('date', date === picker && 'active')}
+          className={pickerClass(
+            "date",
+            "not-current",
+            date === value && "active"
+          )}
           onMouseDown={this.handleClick.bind(this, date)}
         >
           {day}
         </div>
       )
     })
-    const cur = Array.from({ length: getDaysInMonth(current) })
-      .map((_, index) => {
+    const cur = Array.from({ length: getDaysInMonth(current) }).map(
+      (_, index) => {
         const day = supplementZero(index + 1)
         const date = `${curMonthFormat}-${day}`
         return (
           <div
             key={date}
             onMouseDown={this.handleClick.bind(this, date)}
-            className={pickerClass('date', today === date && 'current', date === picker && 'active')}
+            className={pickerClass(
+              "date",
+              today === date && "current",
+              date === value && "active"
+            )}
           >
-          {day}
+            {day}
           </div>
         )
-      })
-    const next = Array.from({ length: 6 - getEndWeekInMonth(current) })
-      .map((_, index) => {
+      }
+    )
+    const next = Array.from({ length: 6 - getEndWeekInMonth(current) }).map(
+      (_, index) => {
         const day = supplementZero(index + 1)
         const date = `${nextMonthFormat}-${day}`
         return (
           <div
             key={date}
             onMouseDown={this.handleClick.bind(this, date)}
-            className={pickerClass('date', date === picker && 'active')}
+            className={pickerClass(
+              "date",
+              "not-current",
+              date === value && "active"
+            )}
           >
-          {day}
+            {day}
           </div>
         )
-      })
+      }
+    )
     return (
-      <div className={pickerClass('date-container')}>{prev.concat(cur, next)}</div>
+      <div className={pickerClass("date-container")}>
+        {prev.concat(cur, next)}
+      </div>
     )
   }
 
   render() {
     return (
-      <div className={clsx(pickerClass('_', this.props.show && 'show'), this.props.className)}>
-        <div className={pickerClass('common')}>
-          <div className={pickerClass('no-select')} key="prev" onClick={this.prevMonthClick}>&lt;</div>
-          <div className={pickerClass('no-select')} key="cur">{getMonth(this.getWrapDays())}</div>
-          <div className={pickerClass('no-select')} key="next" onClick={this.nextMonthClick}>&gt;</div>
+      <div
+        className={clsx(
+          pickerClass("_", this.props.show && "show"),
+          this.props.className
+        )}
+      >
+        <div className={pickerClass("common")}>
+          <div
+            className={pickerClass("no-select")}
+            key="prev"
+            onClick={this.prevMonthClick}
+          >
+            &lt;
+          </div>
+          <div className={pickerClass("no-select")} key="cur">
+            {getMonth(this.getWrapDays())}
+          </div>
+          <div
+            className={pickerClass("no-select")}
+            key="next"
+            onClick={this.nextMonthClick}
+          >
+            &gt;
+          </div>
         </div>
-        <div className={pickerClass('common')}>
-          {weeks.map((v) => (<div key={v} className={pickerClass('week')}>{v}</div>))}
+        <div className={pickerClass("common")}>
+          {weeks.map((v) => (
+            <div key={v} className={pickerClass("week")}>
+              {v}
+            </div>
+          ))}
         </div>
         {this.renderDay()}
       </div>
@@ -163,6 +189,6 @@ Index.propTypes = {
   isRange: PropTypes.bool,
 }
 
-Index.displayName = 'Picker'
+Index.displayName = "Picker"
 
-export default compose(absolute({ type: 'picker' }))(Index)
+export default compose(absolute({ type: "picker" }))(Index)

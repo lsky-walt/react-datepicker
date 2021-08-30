@@ -1,71 +1,41 @@
-import ReactDOM from 'react-dom'
+import ReactDOM from "react-dom"
+import { getParent } from "@lsky/tools/lib/dom"
+import { formats } from "./config"
 
-import { formats } from './config'
+// ----------------
+// class name
+import styles from "../style/index.less"
+import pickers from "../style/picker.less"
+import absolutes from "../style/absolute.less"
+import inputs from "../style/input.less"
+import results from "../style/result.less"
+import containers from "../style/container.less"
 
-import styles from '../style/index.less'
-import pickers from '../style/picker.less'
-import absolutes from '../style/absolute.less'
-import inputs from '../style/input.less'
-import results from '../style/result.less'
-import containers from '../style/container.less'
+const generateCls =
+  (obj, prefix) =>
+  (...args) =>
+    args
+      .filter((v) => !!v)
+      .reduce((prev, cur) => {
+        if (cur === "_") {
+          prev.push(prefix)
+          prev.push(obj[prefix])
+          return prev
+        }
+        prev.push(`${prefix}-${cur}`)
+        prev.push(obj[`${prefix}-${cur}`])
+        return prev
+      }, [])
+      .join(" ")
 
-const generateCls = (obj, prefix) => (...args) => args.filter((v) => !!v).reduce((prev, cur) => {
-  if (cur === '_') {
-    prev.push(prefix)
-    prev.push(obj[prefix])
-    return prev
-  }
-  prev.push(`${prefix}-${cur}`)
-  prev.push(obj[`${prefix}-${cur}`])
-  return prev
-}, []).join(' ')
+const datepickerClass = generateCls(styles, "react-datepicker")
+const pickerClass = generateCls(pickers, "react-datepicker-picker")
+const absoluteClass = generateCls(absolutes, "react-datepicker-absolute")
+const inputClass = generateCls(inputs, "react-datepicker-input")
+const resultClass = generateCls(results, "react-datepicker-result")
+const containerClass = generateCls(containers, "react-datepicker-container")
 
-const datepickerClass = generateCls(styles, 'react-datepicker')
-const pickerClass = generateCls(pickers, 'react-datepicker-picker')
-const absoluteClass = generateCls(absolutes, 'react-datepicker-absolute')
-const inputClass = generateCls(inputs, 'react-datepicker-input')
-const resultClass = generateCls(results, 'react-datepicker-result')
-const containerClass = generateCls(containers, 'react-datepicker-container')
-
-export function getParent(el, target) {
-  if (!target) {
-    return null
-  }
-
-  let temp = el
-  while (temp) {
-    if (typeof target === 'string') {
-      if (temp.matches && temp.matches(target)) {
-        return temp
-      }
-    } else if (temp === target) {
-      return temp
-    }
-
-    temp = temp.parentElement
-  }
-
-  return null
-}
-
-export function addEventListener(target, eventType, cb, option) {
-  /* eslint camelcase: 2 */
-  const callback = ReactDOM.unstable_batchedUpdates ? function run(e) {
-    ReactDOM.unstable_batchedUpdates(cb, e)
-  } : cb
-
-  if (target.addEventListener) {
-    target.addEventListener(eventType, callback, option)
-  }
-
-  return {
-    remove: function remove() {
-      if (target.removeEventListener) {
-        target.removeEventListener(eventType, callback)
-      }
-    },
-  }
-}
+// ----------------
 
 export const docScroll = {
   get top() {
@@ -110,7 +80,8 @@ export function compose(...funcs) {
   }
   const last = funcs[funcs.length - 1]
   const rest = funcs.slice(0, -1)
-  return (...args) => rest.reduceRight((composed, f) => f(composed), last(...args))
+  return (...args) =>
+    rest.reduceRight((composed, f) => f(composed), last(...args))
 }
 
 export function curry(f, ...args) {
@@ -148,10 +119,9 @@ export function pushToRecently(recently, date) {
   return recently
 }
 
-export const shortID = () => {
-  const random = Math.random().toString(16)
-  const now = (+new Date()).toString(16)
-  return `${random.slice(random.length - 7)}-${now.slice(now.length - 7)}`
+export const isInReactDatepickerComponent = (dom) => {
+  if (!dom) return false
+  return !!getParent(dom, ".react-datepicker")
 }
 
 export {
