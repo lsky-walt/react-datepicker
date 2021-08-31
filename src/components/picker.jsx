@@ -2,22 +2,12 @@ import React, { Component } from "react"
 import PropTypes from "prop-types"
 import clsx from "clsx"
 import absolute from "./absolute-container"
+import RenderDay from "./render-day"
+import RenderMonth from "./render-month"
+import RenderYear from "./render-year"
 
 import { pickerClass, compose } from "../tools"
-import {
-  clone,
-  getDaysInMonth,
-  getStartWeekInMonth,
-  getEndWeekInMonth,
-  getMonth,
-  getStartInMonthDate,
-  getPrevMonth,
-  getNextMonth,
-  weeks,
-  formats,
-  resetDate,
-  supplementZero,
-} from "../tools/date"
+import { clone, formats } from "../tools/date"
 
 class Index extends Component {
   constructor(props) {
@@ -26,155 +16,91 @@ class Index extends Component {
     this.today = clone(new Date())
 
     this.state = {
-      current: this.today.format(formats.month), // current: month format with dayjs
+      mode: "day",
+      month: props.value
+        ? clone(props.value).format(formats.month)
+        : this.today.format(formats.month),
+      year: props.value
+        ? clone(props.value).format(formats.year)
+        : this.today.format(formats.year),
     }
 
-    // this.handleClick = this.handleClick.bind(this)
-    this.prevMonthClick = this.prevMonthClick.bind(this)
-    this.nextMonthClick = this.nextMonthClick.bind(this)
+    this.changeStateForChild = this.changeStateForChild.bind(this)
   }
 
-  handleClick(date) {
-    const { onChange } = this.props
-    if (typeof onChange === "function") onChange(date)
+  componentDidUpdate(prevProps) {
+    const { value } = this.props
+    if (prevProps.value !== value) {
+      const tar = clone(value)
+      this.changeStateForChild({
+        month: tar.format(formats.month),
+        year: tar.format(formats.year),
+      })
+    }
   }
 
-  getFormat() {
-    const { format } = this.props
-    if (!format) return formats.date
-    return format
+  changeMode(mode) {
+    this.setState({ mode })
   }
 
-  // wrap date with dayjs
-  getWrapDays() {
-    return clone(this.state.current)
+  changeStateForChild(data) {
+    this.setState(data)
   }
 
-  prevMonthClick() {
-    this.setState({
-      current: getPrevMonth(this.getWrapDays()).format(formats.month),
-    })
-  }
-
-  nextMonthClick() {
-    this.setState({
-      current: getNextMonth(this.getWrapDays()).format(formats.month),
-    })
+  switchMode() {
+    const { mode, month, year } = this.state
+    const { value } = this.props
+    let render = null
+    switch (mode) {
+      case "day":
+        render = this.renderDay()
+        break
+      case "month":
+        render = (
+          <RenderMonth
+            month={month}
+            year={year}
+            value={value}
+            changeModeToYear={this.changeMode.bind(this, "year")}
+            changeMonth={this.changeStateForChild}
+          />
+        )
+        break
+      case "year":
+        render = (
+          <RenderYear
+            year={year}
+            value={value}
+            changeYear={this.changeStateForChild}
+          />
+        )
+        break
+      default:
+        break
+    }
+    return render
   }
 
   renderDay() {
-    const { value } = this.props
-
-    const current = this.getWrapDays()
-
-    const prevMonth = getPrevMonth(current)
-    const daysInPrevMonth = prevMonth.daysInMonth()
-    const startWeek = getStartWeekInMonth(current)
-
-    const today = this.today.format(formats.date)
-
-    // prev month format
-    const prevMonthFormat = prevMonth.format(formats.month)
-    const curMonthFormat = current.format(formats.month)
-    const nextMonthFormat = getNextMonth(current).format(formats.month)
-
-    const prev = Array.from({ length: startWeek }).map((_, index) => {
-      const day = daysInPrevMonth - startWeek + 1 + index
-      const date = `${prevMonthFormat}-${day}`
-      return (
-        <div
-          key={date}
-          className={pickerClass(
-            "date",
-            "not-current",
-            date === value && "active"
-          )}
-          onMouseDown={this.handleClick.bind(this, date)}
-        >
-          {day}
-        </div>
-      )
-    })
-    const cur = Array.from({ length: getDaysInMonth(current) }).map(
-      (_, index) => {
-        const day = supplementZero(index + 1)
-        const date = `${curMonthFormat}-${day}`
-        return (
-          <div
-            key={date}
-            onMouseDown={this.handleClick.bind(this, date)}
-            className={pickerClass(
-              "date",
-              today === date && "current",
-              date === value && "active"
-            )}
-          >
-            {day}
-          </div>
-        )
-      }
-    )
-    const next = Array.from({ length: 6 - getEndWeekInMonth(current) }).map(
-      (_, index) => {
-        const day = supplementZero(index + 1)
-        const date = `${nextMonthFormat}-${day}`
-        return (
-          <div
-            key={date}
-            onMouseDown={this.handleClick.bind(this, date)}
-            className={pickerClass(
-              "date",
-              "not-current",
-              date === value && "active"
-            )}
-          >
-            {day}
-          </div>
-        )
-      }
-    )
+    const { value, format, onChange } = this.props
+    const { month } = this.state
     return (
-      <div className={pickerClass("date-container")}>
-        {prev.concat(cur, next)}
-      </div>
+      <RenderDay
+        value={value}
+        format={format}
+        onChange={onChange}
+        month={month}
+        changeModeToMonth={this.changeMode.bind(this, "month")}
+        changeMonth={this.changeStateForChild}
+      />
     )
   }
 
   render() {
+    const { className, show } = this.props
     return (
-      <div
-        className={clsx(
-          pickerClass("_", this.props.show && "show"),
-          this.props.className
-        )}
-      >
-        <div className={pickerClass("common")}>
-          <div
-            className={pickerClass("no-select")}
-            key="prev"
-            onClick={this.prevMonthClick}
-          >
-            &lt;
-          </div>
-          <div className={pickerClass("no-select")} key="cur">
-            {getMonth(this.getWrapDays())}
-          </div>
-          <div
-            className={pickerClass("no-select")}
-            key="next"
-            onClick={this.nextMonthClick}
-          >
-            &gt;
-          </div>
-        </div>
-        <div className={pickerClass("common")}>
-          {weeks.map((v) => (
-            <div key={v} className={pickerClass("week")}>
-              {v}
-            </div>
-          ))}
-        </div>
-        {this.renderDay()}
+      <div className={clsx(pickerClass("_", show && "show"), className)}>
+        {this.switchMode()}
       </div>
     )
   }
