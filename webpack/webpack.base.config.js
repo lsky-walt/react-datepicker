@@ -1,10 +1,10 @@
-const path = require('path')
+const path = require("path")
 
 module.exports = {
   resolve: {
-    extensions: ['.', '.js', '.jsx', '.json'],
+    extensions: [".", ".js", ".jsx", ".json"],
     alias: {
-      src: path.resolve(__dirname, '../src'),
+      src: path.resolve(__dirname, "../src"),
     },
   },
   module: {
@@ -13,14 +13,14 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
         },
       },
       {
         test: /\.ejs$/,
         use: [
           {
-            loader: 'ejs-loader',
+            loader: "ejs-loader",
             options: {
               esModule: false,
             },
@@ -29,14 +29,14 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|jpeg|gif|eot|svg|ttf|woff)$/,
-        use: ['file-loader?name=[hash:base64:7].[ext]'],
+        use: ["file-loader?name=[hash:base64:7].[ext]"],
       },
       {
         test: /\.css$/,
         use: [
-          'style-loader',
+          "style-loader",
           {
-            loader: 'css-loader',
+            loader: "css-loader",
             options: {
               modules: true,
               sourceMap: true,
@@ -47,19 +47,19 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          'style-loader',
+          "style-loader",
           {
-            loader: 'css-loader',
+            loader: "css-loader",
             options: {
               modules: {
-                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                localIdentName: "[path][name]_--[hash:base64:5]",
               },
               importLoaders: 2,
             },
           },
-          'postcss-loader',
+          "postcss-loader",
           {
-            loader: 'less-loader',
+            loader: "less-loader",
           },
         ],
       },

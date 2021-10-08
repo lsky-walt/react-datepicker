@@ -7,7 +7,8 @@
   position: absolute;
   top: 1px;
   left: 0;
-  width: @picker-size-width;
+  // width: @picker-size-width;
+  max-width: @picker-size-width;
   // height: @picker-size-height;
   line-height: @base-line-height;
   // border: @border-width solid @gray;
@@ -131,6 +132,71 @@
     .@{picker-prefix}-year.@{picker-prefix}-active {
       background-color: @primary-color;
       color: #fff;
+    }
+  }
+
+  .@{picker-prefix}-time-container {
+    box-sizing: border-box;
+
+    .@{picker-prefix}-time-slider {
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .@{picker-prefix}-time {
+      box-sizing: border-box;
+      width: @picker-per-time-width;
+      height: 100%;
+      max-height: 200px;
+      overflow-y: scroll;
+      padding-right: 16px;
+
+      &-per {
+        box-sizing: border-box;
+        height: @picker-per-time-height;
+        width: 100%;
+        text-align: center;
+        line-height: @picker-per-time-height;
+        cursor: pointer;
+
+        &.@{picker-prefix}-time-active {
+          color: #fff;
+          background-color: @primary-color;
+        }
+      }
+    }
+
+    .@{picker-prefix}-time-button-container {
+      box-sizing: border-box;
+      display: flex;
+      justify-content: @time-button-display;
+      padding-right: 16px;
+      padding-top: 8px;
+      .@{picker-prefix}-time-button {
+        display: inline-block;
+        box-sizing: border-box;
+        border: none;
+        margin: 0;
+        padding-top: @button-y;
+        padding-bottom: @button-y;
+        padding-right: @button-x;
+        padding-left: @button-x;
+        outline: none;
+        line-height: @base-line-height / 2;
+        color: #fff;
+        background-color: @primary-color;
+        border-radius: @border-radius;
+        transition: background-color 0.2s ease-in-out;
+        font-size: @time-button-font-size;
+        cursor: pointer;
+
+        &:active,
+        &:focus,
+        &:hover {
+          background-color: @primary-active-color;
+        }
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
-import dayjs, { format } from "dayjs"
+import { isEmpty } from "@lsky/tools"
+import dayjs from "dayjs"
 import { months, weeks, formats } from "./config"
 
 /**
@@ -65,6 +66,28 @@ const getMonth = (date) => months[dayjs(date).month()]
 const supplementZero = (number) =>
   number > 9 ? number.toString() : `0${number}`
 
+const regexFormat = (fmt = "") => {
+  const o = ["Y+", "M+", "D+", "H+", "m+", "s+"]
+  return o.map((match) => {
+    const res = fmt.match(new RegExp(match, "g"))
+    if (res) {
+      return res[0]
+    }
+    return null
+  })
+}
+
+const replaceTargetDateFormat = (fmt = "", tar = "", value) => {
+  if (isEmpty(fmt) || isEmpty(tar) || isEmpty(value)) return fmt
+  if (new RegExp(`(${tar})`).test(fmt)) {
+    fmt = fmt.replace(
+      RegExp.$1,
+      RegExp.$1.length === 1 ? value : `00${value}`.substring(`${value}`.length)
+    )
+  }
+  return fmt
+}
+
 export {
   clone,
   resetDate,
@@ -78,4 +101,6 @@ export {
   getPrevMonth,
   getNextMonth,
   supplementZero,
+  regexFormat,
+  replaceTargetDateFormat,
 }

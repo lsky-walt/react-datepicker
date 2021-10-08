@@ -1,12 +1,12 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { addEventListener } from "@lsky/tools/lib/dom"
-import Result from "./components/result"
 import Input from "./components/input"
 import Container from "./components/container"
 import Picker from "./components/picker"
 
 import { datepickerClass, isInReactDatepickerComponent } from "./tools"
+import { formats } from "./tools/date"
 
 class Index extends React.Component {
   constructor(props) {
@@ -53,6 +53,12 @@ class Index extends React.Component {
     this.setState({ date })
   }
 
+  getFormat() {
+    const { format, type } = this.props
+    if (!format) return formats[type]
+    return format
+  }
+
   /**
    * check range props is available
    * @returns boolean
@@ -72,18 +78,29 @@ class Index extends React.Component {
 
   renderContent() {
     const { show, date } = this.state
+    const { type } = this.props
     const isRange = this.isRange()
     if (isRange) {
       return (
         <Container
+          type={type}
           value={date}
           show={show}
           onChange={this.onChange}
           close={this.onClose}
+          format={this.getFormat()}
         />
       )
     }
-    return <Picker isRange show={show} value={date} onChange={this.onChange} />
+    return (
+      <Picker
+        format={this.getFormat()}
+        show={show}
+        value={date}
+        type={type}
+        onChange={this.onChange}
+      />
+    )
   }
 
   render() {
@@ -103,6 +120,10 @@ Index.propTypes = {
   type: PropTypes.string,
   format: PropTypes.string,
   range: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+}
+
+Index.defaultProps = {
+  type: "datetime",
 }
 
 Index.displayName = "ReactPicker"

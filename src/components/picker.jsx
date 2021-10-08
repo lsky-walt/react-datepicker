@@ -1,10 +1,12 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 import clsx from "clsx"
+import { obtain } from "@lsky/tools"
 import absolute from "./absolute-container"
 import RenderDay from "./render-day"
 import RenderMonth from "./render-month"
 import RenderYear from "./render-year"
+import RenderTime from "./render-time"
 
 import { pickerClass, compose } from "../tools"
 import { clone, formats } from "../tools/date"
@@ -16,7 +18,7 @@ class Index extends Component {
     this.today = clone(new Date())
 
     this.state = {
-      mode: "day",
+      mode: obtain(props, "type", "day"),
       month: props.value
         ? clone(props.value).format(formats.month)
         : this.today.format(formats.month),
@@ -29,13 +31,17 @@ class Index extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { value } = this.props
+    const { value, type } = this.props
     if (prevProps.value !== value) {
       const tar = clone(value)
       this.changeStateForChild({
         month: tar.format(formats.month),
         year: tar.format(formats.year),
       })
+    }
+
+    if (prevProps.type !== type) {
+      this.setState({ mode: type })
     }
   }
 
@@ -49,7 +55,7 @@ class Index extends Component {
 
   switchMode() {
     const { mode, month, year } = this.state
-    const { value } = this.props
+    const { value, format, onChange } = this.props
     let render = null
     switch (mode) {
       case "day":
@@ -59,6 +65,7 @@ class Index extends Component {
         render = (
           <RenderMonth
             month={month}
+            format={format}
             year={year}
             value={value}
             changeModeToYear={this.changeMode.bind(this, "year")}
@@ -70,8 +77,19 @@ class Index extends Component {
         render = (
           <RenderYear
             year={year}
+            format={format}
             value={value}
             changeYear={this.changeStateForChild}
+          />
+        )
+        break
+      case "time":
+        render = (
+          <RenderTime
+            value={value}
+            format={format}
+            // changeTime={this.changeStateForChild}
+            onChange={onChange}
           />
         )
         break
@@ -107,6 +125,7 @@ class Index extends Component {
 }
 
 Index.propTypes = {
+  type: PropTypes.oneOf(["time", "date", "datetime", "month", "year"]),
   show: PropTypes.bool,
   className: PropTypes.string,
   format: PropTypes.string,

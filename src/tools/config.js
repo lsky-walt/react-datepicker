@@ -16,8 +16,8 @@ const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 const formats = {
   date: "YYYY-MM-DD",
-  time: "hh:mm:ss",
-  datetime: "YYYY-MM-DD hh:mm:ss",
+  time: "HH:mm:ss",
+  datetime: "YYYY-MM-DD HH:mm:ss",
   month: "YYYY-MM",
   year: "YYYY",
 }

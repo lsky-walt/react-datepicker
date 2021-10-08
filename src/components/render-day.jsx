@@ -28,12 +28,6 @@ class Index extends Component {
     if (typeof onChange === "function") onChange(date)
   }
 
-  getFormat() {
-    const { format } = this.props
-    if (!format) return formats.date
-    return format
-  }
-
   // wrap date with dayjs
   getWrapDays() {
     const { month } = this.props
