@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
-import { isNumber, isString } from "@lsky/tools/lib/type"
+import { isNumber, isString } from "@lsky/tools"
 import { pickerClass } from "../tools"
 import { clone, formats } from "../tools/date"
 

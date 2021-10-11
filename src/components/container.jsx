@@ -1,7 +1,7 @@
-import React, { Component, PureComponent } from "react"
+import React, { Component } from "react"
 import PropTypes from "prop-types"
 import clsx from "clsx"
-import { getParent, addEventListener } from "@lsky/tools/lib/dom"
+import { getParent, addEventListener } from "@lsky/tools"
 import Picker from "./picker"
 import absolute from "./absolute-container"
 

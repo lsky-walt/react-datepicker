@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom"
-import { getParent } from "@lsky/tools/lib/dom"
+import { getParent } from "@lsky/tools"
 import { formats } from "./config"
 
 // ----------------

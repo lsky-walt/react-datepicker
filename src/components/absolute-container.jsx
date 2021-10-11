@@ -1,7 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { absoluteClass, curry } from "../tools"
-import { inputWidth, pickerWidth, containerWidth } from "../tools/config"
 
 const absoluteWrap = (options, Component) => {
   class Index extends React.Component {

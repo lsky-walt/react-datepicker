@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { addEventListener } from "@lsky/tools/lib/dom"
+import { isNumber, isFunc, addEventListener } from "@lsky/tools"
 import Input from "./components/input"
 import Container from "./components/container"
 import Picker from "./components/picker"
@@ -49,7 +49,7 @@ class Index extends React.Component {
 
   onChange(date) {
     const { onChange } = this.props
-    if (typeof onChange === "function") onChange(date)
+    if (isFunc(onChange)) onChange(date)
     this.setState({ date })
   }
 
@@ -66,7 +66,7 @@ class Index extends React.Component {
   isRange() {
     const { range } = this.props
     if (typeof range === "boolean" && range) return true
-    if (typeof range === "number" && range > 0) return true
+    if (isNumber(range) && range > 0) return true
     return false
   }
 

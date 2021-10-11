@@ -58,7 +58,7 @@ class Index extends Component {
     const { value, format, onChange } = this.props
     let render = null
     switch (mode) {
-      case "day":
+      case "date":
         render = this.renderDay()
         break
       case "month":

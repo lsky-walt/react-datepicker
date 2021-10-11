@@ -8,8 +8,8 @@ class Index extends React.PureComponent {
       <div>
         <p>react-datepicker</p>
         <Datepicker
-          type="time"
-          format="HH:mm"
+          type="date"
+          // format="HH:mm"
           onChange={(value) => {
             console.log(value)
           }}

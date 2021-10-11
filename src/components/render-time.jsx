@@ -13,9 +13,9 @@ class Index extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      h: null,
-      m: null,
-      s: null,
+      h: 0,
+      m: 0,
+      s: 0,
     }
 
     this.onConfirmClick = this.onConfirmClick.bind(this)
