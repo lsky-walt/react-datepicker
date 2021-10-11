@@ -83,8 +83,9 @@ class Index extends Component {
   }
 
   render() {
+    const { className } = this.props
     return (
-      <div className={pickerClass("time-container")}>
+      <div className={clsx(pickerClass("time-container"), className)}>
         <div className={pickerClass("time-slider")}>{this.renderContent()}</div>
         {this.renderButton()}
       </div>
@@ -93,6 +94,7 @@ class Index extends Component {
 }
 
 Index.propTypes = {
+  className: PropTypes.string,
   format: PropTypes.string,
   onChange: PropTypes.func,
   button: PropTypes.bool,
