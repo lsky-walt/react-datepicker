@@ -10,6 +10,7 @@ import {
   getEndWeekInMonth,
   getPrevMonth,
   getNextMonth,
+  resetDate,
   weeks,
   formats,
   supplementZero,
@@ -19,44 +20,55 @@ class Index extends Component {
   constructor(props) {
     super(props)
 
-    this.today = clone(new Date())
+    this.today = resetDate(clone(), 0, 0, 0, 0).format(formats.datetime)
+
+    this.state = {
+      s: props.value || this.today,
+    }
+  }
+
+  // value 发生变化  重置
+  componentDidUpdate(prevProps) {
+    const { value } = this.props
+    if (prevProps.value !== value) {
+      // 这里需要更新 state.s
+      this.setState({ s: value })
+    }
   }
 
   handleClick(date) {
     const { onChange } = this.props
+    // 请注意  这里需要 reset 0
+    // format date 的情况下
     if (isFunc(onChange)) onChange(date)
   }
 
-  // wrap date with dayjs
-  getWrapDays() {
-    const { month } = this.props
-    return clone(month || this.today)
-  }
-
   changeMonth(type) {
-    const { month, changeMonth } = this.props
+    const { s } = this.state
     let tar = null
     if (type === "next") {
-      tar = clone(month).add(1, "month")
+      tar = clone(s).add(1, "month")
     } else {
-      tar = clone(month).subtract(1, "month")
+      tar = clone(s).subtract(1, "month")
     }
-    changeMonth({
-      month: tar.format(formats.month),
-      year: tar.format(formats.year),
+    // state.s是 YYYY-MM-DD HH:mm:ss 格式
+    this.setState({
+      s: tar.format(formats.datetime),
     })
   }
 
   generateDay() {
+    // 注意  value 的格式必须为 YYYY-MM-DD HH:mm:ss
     const { value } = this.props
+    const { s } = this.state
 
-    const current = this.getWrapDays()
+    // current 使用 dayjs foramt
+    // 请注意 current 的值
+    const current = clone(s)
 
     const prevMonth = getPrevMonth(current)
     const daysInPrevMonth = prevMonth.daysInMonth()
     const startWeek = getStartWeekInMonth(current)
-
-    const today = this.today.format(formats.date)
 
     // prev month format
     const prevMonthFormat = prevMonth.format(formats.month)
@@ -65,7 +77,7 @@ class Index extends Component {
 
     const prev = Array.from({ length: startWeek }).map((_, index) => {
       const day = daysInPrevMonth - startWeek + 1 + index
-      const date = `${prevMonthFormat}-${day}`
+      const date = `${prevMonthFormat}-${day} 00:00:00`
       return (
         <div
           key={date}
@@ -83,14 +95,14 @@ class Index extends Component {
     const cur = Array.from({ length: getDaysInMonth(current) }).map(
       (_, index) => {
         const day = supplementZero(index + 1)
-        const date = `${curMonthFormat}-${day}`
+        const date = `${curMonthFormat}-${day} 00:00:00`
         return (
           <div
             key={date}
             onMouseDown={this.handleClick.bind(this, date)}
             className={pickerClass(
               "date",
-              today === date && "current",
+              date === this.today && "current",
               date === value && "active"
             )}
           >
@@ -102,7 +114,7 @@ class Index extends Component {
     const next = Array.from({ length: 6 - getEndWeekInMonth(current) }).map(
       (_, index) => {
         const day = supplementZero(index + 1)
-        const date = `${nextMonthFormat}-${day}`
+        const date = `${nextMonthFormat}-${day} 00:00:00`
         return (
           <div
             key={date}
@@ -126,7 +138,8 @@ class Index extends Component {
   }
 
   render() {
-    const { changeModeToMonth, month } = this.props
+    const { changeModeToMonth } = this.props
+    const { s } = this.state
     return (
       <>
         <div className={pickerClass("common")}>
@@ -142,7 +155,7 @@ class Index extends Component {
             key="cur"
             onClick={changeModeToMonth}
           >
-            {month}
+            {clone(s).format(formats.month)}
           </div>
           <div
             className={pickerClass("no-select")}
@@ -167,14 +180,10 @@ class Index extends Component {
 
 Index.propTypes = {
   show: PropTypes.bool,
-  month: PropTypes.string,
   className: PropTypes.string,
-  format: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.string,
-  isRange: PropTypes.bool,
   changeModeToMonth: PropTypes.func,
-  changeMonth: PropTypes.func,
 }
 
 Index.displayName = "ReactPickerRenderDay"

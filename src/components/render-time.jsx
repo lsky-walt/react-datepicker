@@ -4,51 +4,40 @@ import PropTypes from "prop-types"
 
 import { pickerClass } from "../tools"
 import {
+  clone,
+  formats,
+  resetDate,
   regexFormat,
   supplementZero,
-  replaceTargetDateFormat,
 } from "../tools/date"
 
 class Index extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      h: 0,
-      m: 0,
-      s: 0,
-    }
 
-    this.onConfirmClick = this.onConfirmClick.bind(this)
+    this.today = resetDate(clone(), 0, 0, 0, 0).format(formats.datetime)
   }
 
-  onTimeClick(type, value) {
-    this.setState({ [type]: value })
-  }
-
-  onConfirmClick() {
-    const { h, m, s } = this.state
-    const { onChange, format } = this.props
-    const [, , , ...arr] = regexFormat(format)
-    const value = [h, m, s]
-      .map((v, index) => ({ type: arr[index], value: v }))
-      .reduce(
-        (acc, cur) => replaceTargetDateFormat(acc, cur.type, cur.value),
-        format
-      )
-    onChange(value)
+  onTimeClick(type, time) {
+    const { value, onChange } = this.props
+    let cur = clone(value || this.today)
+    cur = cur[type](+time)
+    onChange(cur.format(formats.datetime))
   }
 
   renderPerTime(count, fmt = null) {
     const { value } = this.props
     const needToSupplement = fmt && fmt.length === 2
-    let forTimeClickParams = "h"
+    let forTimeClickParams = "hour"
     if (fmt.toLowerCase().indexOf("m") !== -1) {
-      forTimeClickParams = "m"
+      forTimeClickParams = "minute"
     }
     if (fmt.toLowerCase().indexOf("s") !== -1) {
-      forTimeClickParams = "s"
+      forTimeClickParams = "second"
     }
-    const active = this.state[forTimeClickParams]
+
+    // 默认值为 null
+    const active = value ? clone(value)[forTimeClickParams]() : null
 
     return (
       <div key={fmt} className={pickerClass("time")}>
@@ -81,19 +70,23 @@ class Index extends Component {
     })
   }
 
+  renderButton() {
+    const { button } = this.props
+    if (!button) return null
+    return (
+      <div className={pickerClass("time-button-container")}>
+        <button type="button" className={pickerClass("time-button")}>
+          确认
+        </button>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className={pickerClass("time-container")}>
         <div className={pickerClass("time-slider")}>{this.renderContent()}</div>
-        <div className={pickerClass("time-button-container")}>
-          <button
-            type="button"
-            className={pickerClass("time-button")}
-            onClick={this.onConfirmClick}
-          >
-            确认
-          </button>
-        </div>
+        {this.renderButton()}
       </div>
     )
   }
@@ -102,6 +95,8 @@ class Index extends Component {
 Index.propTypes = {
   format: PropTypes.string,
   onChange: PropTypes.func,
+  button: PropTypes.bool,
+  value: PropTypes.string,
 }
 
 export default Index

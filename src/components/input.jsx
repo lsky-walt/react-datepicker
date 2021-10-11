@@ -1,6 +1,8 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
+import { isEmpty } from "@lsky/tools"
 import { inputClass } from "../tools"
+import { clone } from "../tools/date"
 
 class Index extends Component {
   constructor(props) {
@@ -19,7 +21,7 @@ class Index extends Component {
   }
 
   render() {
-    const { value, focus, readOnly } = this.props
+    const { value, focus, readOnly, format } = this.props
     return (
       // eslint-disable-next-line jsx-a11y/label-has-associated-control
       <label className={inputClass("_", focus && "active")}>
@@ -28,7 +30,7 @@ class Index extends Component {
           type="text"
           readOnly={readOnly}
           onFocus={this.onFocus}
-          value={value || ""}
+          value={isEmpty(value) ? "" : clone(value).format(format)}
           onChange={this.onChange}
         />
       </label>
@@ -38,6 +40,7 @@ class Index extends Component {
 
 Index.propTypes = {
   value: PropTypes.string,
+  format: PropTypes.string,
   focus: PropTypes.bool,
   onFocus: PropTypes.func,
   readOnly: PropTypes.bool,

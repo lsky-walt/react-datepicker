@@ -9,7 +9,9 @@ import RenderYear from "./render-year"
 import RenderTime from "./render-time"
 
 import { pickerClass, compose } from "../tools"
-import { clone, formats } from "../tools/date"
+import { clone } from "../tools/date"
+
+const list = ["date", "month", "year"]
 
 class Index extends Component {
   constructor(props) {
@@ -19,77 +21,84 @@ class Index extends Component {
 
     this.state = {
       mode: obtain(props, "type", "date"),
-      month: props.value
-        ? clone(props.value).format(formats.month)
-        : this.today.format(formats.month),
-      year: props.value
-        ? clone(props.value).format(formats.year)
-        : this.today.format(formats.year),
     }
 
-    this.changeStateForChild = this.changeStateForChild.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
 
   componentDidUpdate(prevProps) {
-    const { value, type } = this.props
-    if (prevProps.value !== value) {
-      const tar = clone(value)
-      this.changeStateForChild({
-        month: tar.format(formats.month),
-        year: tar.format(formats.year),
-      })
-    }
+    const { type } = this.props
 
     if (prevProps.type !== type) {
       this.setState({ mode: type })
     }
   }
 
+  onChange(value) {
+    const { mode } = this.state
+    const { onChange, type } = this.props
+    // 如果 type === mode
+    if (type === mode) {
+      onChange(value)
+      return
+    }
+    const index = list.indexOf(mode)
+    if (index <= 0) {
+      onChange(value)
+      return
+    }
+    this.setState(
+      {
+        mode: list[index - 1],
+      },
+      () => {
+        onChange(value)
+      }
+    )
+  }
+
   changeMode(mode) {
     this.setState({ mode })
   }
 
-  changeStateForChild(data) {
-    this.setState(data)
-  }
-
   switchMode() {
-    const { mode, month, year } = this.state
-    const { value, format, onChange } = this.props
+    const { mode } = this.state
+    // 请注意：value为 format之后的string
+    const { value, format } = this.props
     let render = null
     switch (mode) {
       case "date":
-        render = this.renderDay()
+        render = (
+          <RenderDay
+            key="date"
+            value={value}
+            onChange={this.onChange}
+            changeModeToMonth={this.changeMode.bind(this, "month")}
+          />
+        )
         break
       case "month":
         render = (
           <RenderMonth
-            month={month}
-            format={format}
-            year={year}
+            key="month"
             value={value}
             changeModeToYear={this.changeMode.bind(this, "year")}
-            changeMonth={this.changeStateForChild}
+            onChange={this.onChange}
           />
         )
         break
       case "year":
         render = (
-          <RenderYear
-            year={year}
-            format={format}
-            value={value}
-            changeYear={this.changeStateForChild}
-          />
+          <RenderYear key="year" value={value} onChange={this.onChange} />
         )
         break
       case "time":
         render = (
           <RenderTime
+            key="time"
             value={value}
             format={format}
-            // changeTime={this.changeStateForChild}
-            onChange={onChange}
+            onChange={this.onChange}
           />
         )
         break
@@ -97,21 +106,6 @@ class Index extends Component {
         break
     }
     return render
-  }
-
-  renderDay() {
-    const { value, format, onChange } = this.props
-    const { month } = this.state
-    return (
-      <RenderDay
-        value={value}
-        format={format}
-        onChange={onChange}
-        month={month}
-        changeModeToMonth={this.changeMode.bind(this, "month")}
-        changeMonth={this.changeStateForChild}
-      />
-    )
   }
 
   render() {

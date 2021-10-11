@@ -1,5 +1,6 @@
 const { merge } = require("webpack-merge")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
 const path = require("path")
 const base = require("./webpack.base.config")
 
@@ -38,7 +39,7 @@ module.exports = merge(
         amd: "prop-types",
       },
     },
-    plugins: [new CleanWebpackPlugin()],
+    plugins: [new CleanWebpackPlugin(), new BundleAnalyzerPlugin()],
   },
   base
 )

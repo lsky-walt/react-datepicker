@@ -18,7 +18,7 @@ class Index extends React.Component {
       date = new Date(date) && clone(date).format(this.getFormat())
     }
     this.state = {
-      date, // 注意：这里类型必须为 string | undefined
+      date, // 注意：这里类型必须为 YYYY-MM-DD HH:mm:ss | undefined
       show: false,
     }
 
@@ -111,7 +111,12 @@ class Index extends React.Component {
     const { date } = this.state
     return (
       <div className={datepickerClass("_")} style={{ width: 300 }}>
-        <Input readOnly onFocus={this.onFocus} value={date} />
+        <Input
+          readOnly
+          onFocus={this.onFocus}
+          value={date}
+          format={this.getFormat()}
+        />
         {this.renderContent()}
       </div>
     )

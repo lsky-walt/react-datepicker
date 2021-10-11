@@ -1,37 +1,55 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 
-import { clone, formats, supplementZero } from "../tools/date"
+import { clone, formats, supplementZero, resetDate } from "../tools/date"
 import { pickerClass } from "../tools"
 
 export default class Index extends Component {
-  handleMonthClick(month) {
-    const { changeMonth } = this.props
-    const tar = clone(month)
-    changeMonth({
-      month: tar.format(formats.month),
-      year: tar.format(formats.year),
-      mode: "day",
-    })
+  constructor(props) {
+    super(props)
+    // 月份为1
+    this.today = resetDate(clone(), 0, 0, 0, 0, 1).format(formats.datetime)
+    this.state = {
+      s: props.value || this.today,
+    }
   }
 
-  changeMonth(type) {
-    const { month, changeMonth } = this.props
+  handleMonthClick(month) {
+    const { onChange, value } = this.props
+    let cur = clone(value || this.today)
+    const tar = clone(month)
+    cur = cur.year(tar.year())
+    cur = cur.month(tar.month())
+    onChange(
+      cur.format(formats.datetime) // 注意 value 值必须为 YYYY-MM-DD HH:mm:ss
+    )
+  }
+
+  changeYear(type) {
+    const { s } = this.state
     let tar = null
     if (type === "next") {
-      tar = clone(month).add(1, "year")
+      tar = clone(s).add(1, "year")
     } else {
-      tar = clone(month).subtract(1, "year")
+      tar = clone(s).subtract(1, "year")
     }
-    changeMonth({
-      month: tar.format(formats.month),
-      year: tar.format(formats.year),
+    this.setState({
+      s: tar.format(formats.datetime),
     })
   }
 
   generateMonth() {
-    const { year, value } = this.props
-    const currentMonth = clone(value).format(formats.month)
+    // value 值存在两种情况
+    // 1. 2021-10-01 00:00:00 // type = month 的情况
+    // 2. 2021-10-11 12:31:23 // type = date / datetime 的情况
+    // 所以需要格式化为 YYYY-MM 用于对比
+    const { value } = this.props
+    const { s } = this.state
+
+    const year = clone(s).year()
+
+    // 注意 format 格式为 YYYY-MM 保持统一
+    const currentMonth = clone(value).format("YYYY-MM")
     return Array.from({ length: 12 }).map((_, index) => {
       const tar = `${year}-${supplementZero(index + 1)}`
       return (
@@ -47,14 +65,15 @@ export default class Index extends Component {
   }
 
   render() {
-    const { year, changeModeToYear } = this.props
+    const { changeModeToYear } = this.props
+    const { s } = this.state
     return (
       <>
         <div className={pickerClass("common")}>
           <div
             className={pickerClass("no-select")}
             key="prev"
-            onClick={this.changeMonth.bind(this, "prev")}
+            onClick={this.changeYear.bind(this, "prev")}
           >
             &lt;
           </div>
@@ -63,12 +82,12 @@ export default class Index extends Component {
             key="cur"
             onClick={changeModeToYear}
           >
-            {year}
+            {clone(s).year()}
           </div>
           <div
             className={pickerClass("no-select")}
             key="next"
-            onClick={this.changeMonth.bind(this, "next")}
+            onClick={this.changeYear.bind(this, "next")}
           >
             &gt;
           </div>
@@ -82,9 +101,7 @@ export default class Index extends Component {
 }
 
 Index.propTypes = {
-  year: PropTypes.string,
-  month: PropTypes.string,
   value: PropTypes.string,
   changeModeToYear: PropTypes.func,
-  changeMonth: PropTypes.func,
+  onChange: PropTypes.func,
 }
