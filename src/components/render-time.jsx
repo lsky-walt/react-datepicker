@@ -39,6 +39,7 @@ class Index extends Component {
   }
 
   renderPerTime(count, fmt = null) {
+    const { value } = this.props
     const needToSupplement = fmt && fmt.length === 2
     let forTimeClickParams = "h"
     if (fmt.toLowerCase().indexOf("m") !== -1) {

@@ -1,9 +1,8 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
-import clsx from "clsx"
-import absolute from "./absolute-container"
 
-import { pickerClass, compose } from "../tools"
+import { isFunc } from "@lsky/tools"
+import { pickerClass } from "../tools"
 import {
   clone,
   getDaysInMonth,
@@ -25,7 +24,7 @@ class Index extends Component {
 
   handleClick(date) {
     const { onChange } = this.props
-    if (typeof onChange === "function") onChange(date)
+    if (isFunc(onChange)) onChange(date)
   }
 
   // wrap date with dayjs

@@ -18,7 +18,7 @@ class Index extends Component {
     this.today = clone(new Date())
 
     this.state = {
-      mode: obtain(props, "type", "day"),
+      mode: obtain(props, "type", "date"),
       month: props.value
         ? clone(props.value).format(formats.month)
         : this.today.format(formats.month),

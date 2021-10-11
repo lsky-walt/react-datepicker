@@ -1,20 +1,24 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { isNumber, isFunc, addEventListener } from "@lsky/tools"
+import { isNumber, isFunc, addEventListener, isString } from "@lsky/tools"
 import Input from "./components/input"
 import Container from "./components/container"
 import Picker from "./components/picker"
 
 import { datepickerClass, isInReactDatepickerComponent } from "./tools"
-import { formats } from "./tools/date"
+import { formats, clone } from "./tools/date"
 
 class Index extends React.Component {
   constructor(props) {
     super(props)
     this.onChange = this.onChange.bind(this)
 
+    let date
+    if (isNumber(date) || isString(date)) {
+      date = new Date(date) && clone(date).format(this.getFormat())
+    }
     this.state = {
-      date: props.value,
+      date, // 注意：这里类型必须为 string | undefined
       show: false,
     }
 
@@ -33,7 +37,7 @@ class Index extends React.Component {
     const { value } = this.props
     if (value !== prevProps.value) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ data: value })
+      this.setState({ date: value })
     }
   }
 

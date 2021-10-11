@@ -47,7 +47,7 @@
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
-    "@lsky/tools": "^0.0.7",
+    "@lsky/tools": "^1.0.0",
     "clsx": "^1.1.1",
     "dayjs": "^1.9.7",
     "lodash.throttle": "^4.1.1",
