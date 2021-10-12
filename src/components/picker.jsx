@@ -6,7 +6,7 @@ import absolute from "./absolute-container"
 import RenderDay from "./render-day"
 import RenderMonth from "./render-month"
 import RenderYear from "./render-year"
-import RenderTime from "./render-time"
+import RenderTime, { Content } from "./render-time"
 
 import { pickerClass, compose } from "../tools"
 import { clone } from "../tools/date"
@@ -100,6 +100,32 @@ class Index extends Component {
             format={format}
             onChange={this.onChange}
           />
+        )
+        break
+      case "datetime":
+        render = (
+          <div className={pickerClass("datetime-container")}>
+            <div>
+              <RenderDay
+                key="date"
+                value={value}
+                onChange={this.onChange}
+                changeModeToMonth={this.changeMode.bind(this, "month")}
+              />
+            </div>
+            <div className={pickerClass("border-left")}>
+              <div
+                className={pickerClass("datetime-time-top", "border-bottom")}
+              />
+              <Content
+                className={pickerClass("datetime-time-c")}
+                key="time"
+                value={value}
+                format={format}
+                onChange={this.onChange}
+              />
+            </div>
+          </div>
         )
         break
       default:

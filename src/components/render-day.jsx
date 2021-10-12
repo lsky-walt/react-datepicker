@@ -142,7 +142,7 @@ class Index extends Component {
     const { s } = this.state
     return (
       <>
-        <div className={pickerClass("common")}>
+        <div className={pickerClass("common", "border-bottom")}>
           <div
             className={pickerClass("no-select")}
             key="prev"

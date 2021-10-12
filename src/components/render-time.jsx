@@ -11,7 +11,7 @@ import {
   supplementZero,
 } from "../tools/date"
 
-class Index extends Component {
+export class Content extends Component {
   constructor(props) {
     super(props)
 
@@ -74,7 +74,7 @@ class Index extends Component {
     const { button } = this.props
     if (!button) return null
     return (
-      <div className={pickerClass("time-button-container")}>
+      <div key="time-button" className={pickerClass("time-button-container")}>
         <button type="button" className={pickerClass("time-button")}>
           确认
         </button>
@@ -84,16 +84,19 @@ class Index extends Component {
 
   render() {
     const { className } = this.props
-    return (
-      <div className={clsx(pickerClass("time-container"), className)}>
-        <div className={pickerClass("time-slider")}>{this.renderContent()}</div>
-        {this.renderButton()}
-      </div>
-    )
+    return [
+      <div
+        key="time-slider"
+        className={clsx(pickerClass("time-slider"), className)}
+      >
+        {this.renderContent()}
+      </div>,
+      this.renderButton(),
+    ]
   }
 }
 
-Index.propTypes = {
+Content.propTypes = {
   className: PropTypes.string,
   format: PropTypes.string,
   onChange: PropTypes.func,
@@ -101,4 +104,17 @@ Index.propTypes = {
   value: PropTypes.string,
 }
 
-export default Index
+function WrapContainer(props) {
+  const { className, ...params } = props
+  return (
+    <div className={clsx(pickerClass("time-container"), className)}>
+      <Content {...params} />
+    </div>
+  )
+}
+
+WrapContainer.propTypes = {
+  className: PropTypes.string,
+}
+
+export default WrapContainer
