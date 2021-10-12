@@ -5,13 +5,7 @@ import { getParent, addEventListener } from "@lsky/tools"
 import Picker from "./picker"
 import absolute from "./absolute-container"
 
-import {
-  datepickerClass,
-  pickerClass,
-  containerClass,
-  pushToRecently,
-  compose,
-} from "../tools"
+import { containerClass, pushToRecently, compose } from "../tools"
 
 import Input from "./input"
 

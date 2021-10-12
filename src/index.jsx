@@ -2,7 +2,6 @@ import React from "react"
 import PropTypes from "prop-types"
 import { isNumber, isFunc, addEventListener, isString } from "@lsky/tools"
 import Input from "./components/input"
-import Container from "./components/container"
 import Picker from "./components/picker"
 
 import { datepickerClass, isInReactDatepickerComponent } from "./tools"
@@ -85,16 +84,7 @@ class Index extends React.Component {
     const { type } = this.props
     const isRange = this.isRange()
     if (isRange) {
-      return (
-        <Container
-          type={type}
-          value={date}
-          show={show}
-          onChange={this.onChange}
-          close={this.onClose}
-          format={this.getFormat()}
-        />
-      )
+      return null
     }
     return (
       <Picker

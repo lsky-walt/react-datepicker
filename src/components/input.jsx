@@ -17,7 +17,7 @@ class Index extends Component {
   }
 
   onChange(e) {
-    console.log("onChange: ", e.target.value)
+    // console.log("onChange: ", e.target.value)
   }
 
   render() {

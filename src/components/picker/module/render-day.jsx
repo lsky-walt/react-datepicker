@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 
-import { isFunc } from "@lsky/tools"
 import { pickerClass } from "src/tools"
 import {
   clone,
@@ -15,6 +14,7 @@ import {
   formats,
   supplementZero,
 } from "src/tools/date"
+import { isEmpty } from "@lsky/tools/lib/value"
 
 class Index extends Component {
   constructor(props) {
@@ -37,10 +37,13 @@ class Index extends Component {
   }
 
   handleClick(date) {
-    const { onChange } = this.props
+    const { onChange, value } = this.props
     // 请注意  这里需要 reset 0
     // format date 的情况下
-    if (isFunc(onChange)) onChange(date)
+    let cur = clone(value || this.today)
+    const tar = clone(date)
+    cur = cur.date(tar.date())
+    onChange(cur.format(formats.datetime))
   }
 
   changeMonth(type) {
@@ -62,6 +65,10 @@ class Index extends Component {
     const { value } = this.props
     const { s } = this.state
 
+    // active
+    const active = isEmpty(value) ? null : clone(value).format(formats.date)
+    const t = clone(this.today).format(formats.date)
+
     // current 使用 dayjs foramt
     // 请注意 current 的值
     const current = clone(s)
@@ -77,14 +84,14 @@ class Index extends Component {
 
     const prev = Array.from({ length: startWeek }).map((_, index) => {
       const day = daysInPrevMonth - startWeek + 1 + index
-      const date = `${prevMonthFormat}-${day} 00:00:00`
+      const date = `${prevMonthFormat}-${day}`
       return (
         <div
           key={date}
           className={pickerClass(
             "date",
             "not-current",
-            date === value && "active"
+            date === active && "active"
           )}
           onMouseDown={this.handleClick.bind(this, date)}
         >
@@ -95,15 +102,15 @@ class Index extends Component {
     const cur = Array.from({ length: getDaysInMonth(current) }).map(
       (_, index) => {
         const day = supplementZero(index + 1)
-        const date = `${curMonthFormat}-${day} 00:00:00`
+        const date = `${curMonthFormat}-${day}`
         return (
           <div
             key={date}
             onMouseDown={this.handleClick.bind(this, date)}
             className={pickerClass(
               "date",
-              date === this.today && "current",
-              date === value && "active"
+              date === t && "current",
+              date === active && "active"
             )}
           >
             {day}
@@ -114,7 +121,7 @@ class Index extends Component {
     const next = Array.from({ length: 6 - getEndWeekInMonth(current) }).map(
       (_, index) => {
         const day = supplementZero(index + 1)
-        const date = `${nextMonthFormat}-${day} 00:00:00`
+        const date = `${nextMonthFormat}-${day}`
         return (
           <div
             key={date}
@@ -122,7 +129,7 @@ class Index extends Component {
             className={pickerClass(
               "date",
               "not-current",
-              date === value && "active"
+              date === active && "active"
             )}
           >
             {day}
