@@ -138,7 +138,7 @@ class Index extends Component {
   }
 
   render() {
-    const { changeModeToMonth } = this.props
+    const { changeMode } = this.props
     const { s } = this.state
     return (
       <>
@@ -153,7 +153,7 @@ class Index extends Component {
           <div
             className={pickerClass("no-select")}
             key="cur"
-            onClick={changeModeToMonth}
+            onClick={changeMode}
           >
             {clone(s).format(formats.month)}
           </div>
@@ -183,7 +183,7 @@ Index.propTypes = {
   className: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.string,
-  changeModeToMonth: PropTypes.func,
+  changeMode: PropTypes.func,
 }
 
 Index.displayName = "ReactPickerRenderDay"

@@ -6,12 +6,21 @@ import absolute from "./absolute-container"
 import RenderDay from "./render-day"
 import RenderMonth from "./render-month"
 import RenderYear from "./render-year"
-import RenderTime, { Content } from "./render-time"
+import RenderTime from "./render-time"
+import RenderDatetime from "./render-datetime"
 
 import { pickerClass, compose } from "../tools"
 import { clone } from "../tools/date"
 
 const list = ["date", "month", "year"]
+
+const renderMap = {
+  date: RenderDay,
+  month: RenderMonth,
+  year: RenderYear,
+  time: RenderTime,
+  datetime: RenderDatetime,
+}
 
 class Index extends Component {
   constructor(props) {
@@ -65,73 +74,22 @@ class Index extends Component {
     const { mode } = this.state
     // 请注意：value为 format之后的string
     const { value, format } = this.props
-    let render = null
-    switch (mode) {
-      case "date":
-        render = (
-          <RenderDay
-            key="date"
-            value={value}
-            onChange={this.onChange}
-            changeModeToMonth={this.changeMode.bind(this, "month")}
-          />
-        )
-        break
-      case "month":
-        render = (
-          <RenderMonth
-            key="month"
-            value={value}
-            changeModeToYear={this.changeMode.bind(this, "year")}
-            onChange={this.onChange}
-          />
-        )
-        break
-      case "year":
-        render = (
-          <RenderYear key="year" value={value} onChange={this.onChange} />
-        )
-        break
-      case "time":
-        render = (
-          <RenderTime
-            key="time"
-            value={value}
-            format={format}
-            onChange={this.onChange}
-          />
-        )
-        break
-      case "datetime":
-        render = (
-          <div className={pickerClass("datetime-container")}>
-            <div>
-              <RenderDay
-                key="date"
-                value={value}
-                onChange={this.onChange}
-                changeModeToMonth={this.changeMode.bind(this, "month")}
-              />
-            </div>
-            <div className={pickerClass("border-left")}>
-              <div
-                className={pickerClass("datetime-time-top", "border-bottom")}
-              />
-              <Content
-                className={pickerClass("datetime-time-c")}
-                key="time"
-                value={value}
-                format={format}
-                onChange={this.onChange}
-              />
-            </div>
-          </div>
-        )
-        break
-      default:
-        break
+    const Render = renderMap[mode]
+    if (!Render) return null
+
+    const index = list.indexOf(mode)
+    let changeMode
+    if (index !== -1 && index <= list.length - 2) {
+      changeMode = this.changeMode.bind(this, list[index + 1])
     }
-    return render
+    return (
+      <Render
+        value={value}
+        format={format}
+        onChange={this.onChange}
+        changeMode={changeMode}
+      />
+    )
   }
 
   render() {

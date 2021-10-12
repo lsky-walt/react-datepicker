@@ -65,7 +65,7 @@ export default class Index extends Component {
   }
 
   render() {
-    const { changeModeToYear } = this.props
+    const { changeMode } = this.props
     const { s } = this.state
     return (
       <>
@@ -80,7 +80,7 @@ export default class Index extends Component {
           <div
             className={pickerClass("no-select")}
             key="cur"
-            onClick={changeModeToYear}
+            onClick={changeMode}
           >
             {clone(s).year()}
           </div>
@@ -102,6 +102,6 @@ export default class Index extends Component {
 
 Index.propTypes = {
   value: PropTypes.string,
-  changeModeToYear: PropTypes.func,
+  changeMode: PropTypes.func,
   onChange: PropTypes.func,
 }
