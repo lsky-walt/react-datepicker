@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 
-import { clone, formats, supplementZero, resetDate } from "../tools/date"
-import { pickerClass } from "../tools"
+import { clone, formats, supplementZero, resetDate } from "src/tools/date"
+import { pickerClass } from "src/tools"
 
 export default class Index extends Component {
   constructor(props) {

@@ -2,14 +2,14 @@ import clsx from "clsx"
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 
-import { pickerClass } from "../tools"
+import { pickerClass } from "src/tools"
 import {
   clone,
   formats,
   resetDate,
   regexFormat,
   supplementZero,
-} from "../tools/date"
+} from "src/tools/date"
 
 export class Content extends Component {
   constructor(props) {

@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import PropTypes from "prop-types"
 
 import { isFunc } from "@lsky/tools"
-import { pickerClass } from "../tools"
+import { pickerClass } from "src/tools"
 import {
   clone,
   getDaysInMonth,
@@ -14,7 +14,7 @@ import {
   weeks,
   formats,
   supplementZero,
-} from "../tools/date"
+} from "src/tools/date"
 
 class Index extends Component {
   constructor(props) {

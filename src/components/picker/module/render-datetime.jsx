@@ -1,8 +1,8 @@
 import React from "react"
+import { pickerClass } from "src/tools"
+
 import { Content } from "./render-time"
 import RenderDay from "./render-day"
-
-import { pickerClass } from "../tools"
 
 export default function Index(props) {
   return (
